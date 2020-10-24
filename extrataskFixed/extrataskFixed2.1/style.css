@@ -27,7 +27,7 @@ html {
     justify-content: center;
 }
 
-.main > button {
+.main__btn{
     position: relative;
     z-index: 1;
     width: 25%;
@@ -102,14 +102,14 @@ html {
     cursor: pointer;
 }
 
-.modal-screen__close-btn {
+.modal-screen__close-btn-container {
     display: flex;
     justify-content: flex-end;
     margin: var(--modal-elements-indent) calc(var(--modal-elements-indent) / 2) 0;
     cursor: pointer;
 }
 
-.modal-screen__close-btn button:after {
+.modal-screen__close-btn:after {
     content: "";
     position: relative;
     display: block;
@@ -122,7 +122,7 @@ html {
 
 }
 
-.modal-screen__close-btn button:before {
+.modal-screen__close-btn:before {
     content: "";
     position: relative;
     display: block;
