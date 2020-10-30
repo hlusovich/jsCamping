@@ -15,8 +15,5 @@ function findMaxSubArr(array) {
             }
         }
     }
-
     return accumulator;
-
-
 }
