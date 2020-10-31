@@ -147,6 +147,7 @@ const chatModule = (function () {
         },
 
     ];
+    const idList = new Set(messages.map(item => item.id));
 
     function getMessages(skip = 0, top = 10, filterConfig) {
         let visibleMessages = messages.slice(skip, top).sort((a, b) => a.createdAt - b.createdAt);
@@ -163,17 +164,20 @@ const chatModule = (function () {
     }
 
     function validateMessage(msg) {
-        if (msg.id && typeof msg.id === "string" && msg.text && typeof msg.text === "string" && msg.createdAt && msg.createdAt.__proto__ === Date.prototype && msg.author && typeof msg.author === "string") {
-            if ("isPersonal" in msg) {
+        if (msg.id && typeof msg.id === "string"
+            && msg.text && typeof msg.text === "string"
+            && msg.createdAt && msg.createdAt.__proto__ === Date.prototype
+            && msg.author && typeof msg.author === "string") {
+            if ((msg.isPersonal === false && !msg.to) ||
+                (msg.isPersonal && msg.to && typeof msg.to === "string")) {
                 return typeof msg.isPersonal === "boolean";
             }
-            return true;
+            return false;
         }
         return false;
     }
-
     function addMessage(msg) {
-        if (validateMessage(msg)) {
+        if (validateMessage(msg) && !idList.has(msg.id)) {
             messages.push(msg);
             return true;
         }
@@ -181,18 +185,17 @@ const chatModule = (function () {
     }
 
     function removeMessage(id) {
-        if (messages.some(item => item.id === id)) {
+        if (getMessage(id)) {
             messages = messages.filter(item => item.id !== id);
             return true;
         }
         return false;
     }
-
     function editMessage(id, msg) {
         let changeMessageParams = (oldMsg) => {
             let newMsg = {...oldMsg};
-            newMsg.text = msg.text ? newMsg.text = msg.text : newMsg.text;
-            newMsg.isPersonal = "isPersonal" in msg ? newMsg.isPersonal = msg.isPersonal : newMsg.isPersonal;
+            newMsg.text = msg.text ? msg.text : newMsg.text;
+            newMsg.isPersonal = "isPersonal" in msg ? msg.isPersonal : newMsg.isPersonal;
             if (msg.isPersonal && msg.to) {
                 newMsg.isPersonal = msg.isPersonal;
                 newMsg.to = msg.to;
@@ -217,9 +220,7 @@ const chatModule = (function () {
         } else {
             return false;
         }
-
     }
-
     return {
         getMessages,
         removeMessage,
@@ -269,7 +270,7 @@ console.log(chatModule.editMessage("5", {text: 132}));
 console.log(chatModule.getMessages());
 console.log("сделаем id20 сообщение из приватного публичныым");
 console.log(chatModule.getMessage("20"));
-console.log(chatModule.editMessage("20", {isPersonal: true, to: "Стэнли Кубрик"}));
+console.log(chatModule.editMessage("20", {isPersonal: false}));
 console.log(chatModule.getMessage("20"));
 
 
