@@ -1,0 +1,136 @@
+:root {
+    --main-color: #4a76a8;
+    --modal-elements-indent: 5%;
+    --modal-indent:18%;
+
+}
+
+html {
+    font-size: 10px;
+    font-family: "Times New Roman", sans-serif;
+    font-weight: 500;
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+}
+
+.main {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main__btn{
+    position: relative;
+    z-index: 1;
+    width: 25%;
+    height: 8%;
+    color: white;
+    background: var(--main-color);
+    font-size: 2.5rem;
+    padding: 1%;
+    bottom: calc(var(--modal-indent ) * 2);
+}
+
+.main__blur {
+    background: black;
+    opacity: 0.7;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    position: absolute;
+    top: 0;
+}
+
+.modal-screen {
+    position: absolute;
+    width: 70%;
+    height: 60%;
+    border-radius: 3px;
+    z-index: 3;
+    background: white;
+    display: flex;
+    flex-flow: column;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 0 var(--modal-elements-indent) var(--modal-elements-indent);
+    top: var(--modal-indent
+    );
+}
+
+.modal-screen > div {
+    width: 100%;
+}
+
+.modal-screen__title {
+    font-size: 5rem;
+}
+
+.modal-screen__line {
+    height: 1px;
+    width: 95%;
+    background: black;
+    margin: calc(var(--modal-elements-indent) / 2) 0 calc(var(--modal-elements-indent) / 2);
+
+}
+
+.modal-screen__text {
+    font-size: 3rem;
+}
+
+.modal-screen__submit-btn {
+    width: 10%;
+    background: var(--main-color);
+    color: white;
+    height: 6%;
+    margin-left: calc(100% - var(--modal-elements-indent) - 8%);
+    font-size: 2rem;
+    padding: 0 2.5%;
+    text-align: center;
+
+}
+
+.modal-screen__submit-btn:hover {
+    background: linear-gradient(var(--main-color), blueviolet);
+    cursor: pointer;
+}
+
+.modal-screen__close-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: var(--modal-elements-indent) calc(var(--modal-elements-indent) / 2) 0;
+    cursor: pointer;
+}
+
+.modal-screen__close-btn:after {
+    content: "";
+    position: relative;
+    display: block;
+    height: 2px;
+    background: grey;
+    width: 20px;
+    transform: rotate(-135deg);
+    top: -1px;
+    cursor: pointer;
+
+}
+
+.modal-screen__close-btn:before {
+    content: "";
+    position: relative;
+    display: block;
+    height: 2px;
+    background: grey;
+    width: 20px;
+    transform: rotate(135deg);
+    top: 1px;
+    cursor: pointer;
+
+}
