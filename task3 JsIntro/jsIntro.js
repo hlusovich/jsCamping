@@ -1,17 +1,37 @@
 "use strict";
 const chatModule = (function () {
+    const filterObj = {
+        author: (item, author) => !author || item.author.toLowerCase().includes(author.toLowerCase()),
+        text: (item, text) => !text || item.text.toLowerCase().includes(text.toLowerCase()),
+        dateTo: (item, dateTo) => !dateTo || item.createdAt < dateTo,
+        dateFrom: (item, dateFrom) => !dateFrom || item.createdAt > dateFrom,
+    };
+    const validateObj = {
+        text: (msg) => msg.text && typeof msg.text === "string",
+        id: (msg) => msg.id && typeof msg.id === "string",
+        createdAt: (msg) => msg.createdAt && msg.createdAt.__proto__ === Date.prototype,
+        author: (msg) => msg.author && typeof msg.author === "string",
+        isPersonal: (msg) => {
+            if ((msg.isPersonal === false && !msg.to) ||
+                (msg.isPersonal && msg.to && typeof msg.to === "string")) {
+                return typeof msg.isPersonal === "boolean";
+            }
+        }
+    };
+
+
     let messages = [
         {
             id: '1',
             text: 'Привет!',
-            createdAt: new Date('2020-10-12T23:10:05'),
+            createdAt: new Date('2020-10-10T23:10:05'),
             author: 'Js Camping',
             isPersonal: false,
         },
         {
             id: '2',
             text: 'Привет!',
-            createdAt: new Date('2020-10-12T23:10:04'),
+            createdAt: new Date('2020-10-10T23:10:04'),
             author: 'Богдан Навсекайло',
             isPersonal: false,
         },
@@ -100,6 +120,7 @@ const chatModule = (function () {
             text: 'Зацените кодеварс',
             createdAt: new Date('2020-10-12T23:05:01'),
             author: 'Яна Ярошевич',
+            isPersonal: false,
         },
         {
             id: '15',
@@ -145,18 +166,16 @@ const chatModule = (function () {
             isPersonal: true,
             to: 'Носик Кокосик',
         },
-
     ];
+
     const idList = new Set(messages.map(item => item.id));
 
-    function getMessages(skip = 0, top = 10, filterConfig) {
-        let visibleMessages = messages.slice(skip, top).sort((a, b) => a.createdAt - b.createdAt);
-        if (filterConfig) {
-            visibleMessages = filterConfig.author ? visibleMessages.filter(item => item.author.includes(filterConfig.author)) : visibleMessages;
-            visibleMessages = filterConfig.dateFrom ? visibleMessages.filter(item => item.createdAt > filterConfig.dateFrom && item.createdAt < filterConfig.dateTo) : visibleMessages;
-            visibleMessages = filterConfig.text ? visibleMessages.filter(item => item.text.includes(filterConfig.text)) : visibleMessages;
-        }
-        return visibleMessages;
+    function getMessages(skip = 0, top = 10, filterConfig = {}) {
+        let visibleMessages = [...messages];
+        Object.keys(filterObj).forEach(name => {
+            visibleMessages = visibleMessages.filter(item => filterObj[name](item, filterConfig[name]))
+        });
+        return visibleMessages.sort((a, b) => a.createdAt - b.createdAt).slice(skip, top);
     }
 
     function getMessage(id) {
@@ -164,20 +183,15 @@ const chatModule = (function () {
     }
 
     function validateMessage(msg) {
-        if (msg.id && typeof msg.id === "string"
-            && msg.text && typeof msg.text === "string"
-            && msg.createdAt && msg.createdAt.__proto__ === Date.prototype
-            && msg.author && typeof msg.author === "string") {
-            if ((msg.isPersonal === false && !msg.to) ||
-                (msg.isPersonal && msg.to && typeof msg.to === "string")) {
-                return typeof msg.isPersonal === "boolean";
-            }
-            return false;
-        }
-        return false;
+        return Object.keys(validateObj).every(name => validateObj[name](msg));
+
     }
+
     function addMessage(msg) {
+        msg.createdAt = new Date();
+        msg.id = `${Math.max(...idList) + 1}`;
         if (validateMessage(msg) && !idList.has(msg.id)) {
+            idList.add(msg.id);
             messages.push(msg);
             return true;
         }
@@ -191,6 +205,7 @@ const chatModule = (function () {
         }
         return false;
     }
+
     function editMessage(id, msg) {
         let changeMessageParams = (oldMsg) => {
             let newMsg = {...oldMsg};
@@ -221,6 +236,7 @@ const chatModule = (function () {
             return false;
         }
     }
+
     return {
         getMessages,
         removeMessage,
@@ -236,7 +252,7 @@ console.log(`получаем первые 10 по умолчанию `);
 console.log(chatModule.getMessages());
 console.log(`получаем вторые 10 `);
 console.log(chatModule.getMessages(10, 20));
-console.log(`получаем из первых 10 те, где в тексте есть Привет `);
+console.log(`получаем первые 10 те, где в тексте есть Привет `);
 console.log(chatModule.getMessages(0, 10, {text: "Привет"}));
 console.log(`получаем из первых 10 те, где в тексте есть Привет! и автор Яна`);
 console.log(chatModule.getMessages(0, 10, {text: "Привет!", author: 'Ярошевич'}));
@@ -254,9 +270,7 @@ console.log("получить сообщение с индексом 3");
 console.log(chatModule.getMessage("3"));
 console.log("Добавить сообщение");
 console.log(chatModule.addMessage({
-    id: '21',
     text: 'Новое сообщение',
-    createdAt: new Date('2020-10-12T23:10:04'),
     author: 'Богдан Навсекайло',
     isPersonal: false,
 }));
