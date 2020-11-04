@@ -171,9 +171,11 @@ const chatModule = (function () {
     const idList = new Set(messages.map(item => item.id));
 
     function getMessages(skip = 0, top = 10, filterConfig = {}) {
-        let visibleMessages = [...messages];
-        Object.keys(filterObj).forEach(name => {
-            visibleMessages = visibleMessages.filter(item => filterObj[name](item, filterConfig[name]))
+        let filterNames = Object.keys(filterConfig);
+        let visibleMessages = messages.filter(item => {
+            return filterNames.every(name => {
+                return filterObj[name](item, filterConfig[name])
+            })
         });
         return visibleMessages.sort((a, b) => a.createdAt - b.createdAt).slice(skip, top);
     }
@@ -286,6 +288,5 @@ console.log("сделаем id20 сообщение из приватного п
 console.log(chatModule.getMessage("20"));
 console.log(chatModule.editMessage("20", {isPersonal: false}));
 console.log(chatModule.getMessage("20"));
-
 
 
