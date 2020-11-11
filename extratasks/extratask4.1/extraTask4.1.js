@@ -5,7 +5,6 @@ class Node {
         this.next = null;
         this.value = value;
     }
-
 }
 
 class List {
@@ -32,7 +31,7 @@ class List {
             }
             currentNode = currentNode.next;
         }
-        let newNode = new Node(value);
+        const newNode = new Node(value);
         if (index !== undefined) {
             newNode.next = currentNode.next;
         }
@@ -102,7 +101,7 @@ list.print();
 console.log("добавим значение cat в конец");
 console.log(list.addNode("cat"));
 console.log("добавим значение monkey в конец");
-console.log(list.addNode("monkey"));
+console.log(list.addNode("monkey",1));
 console.log("выведем list");
 list.print();
 console.log("добавим птицу между котом и обезьяной");
