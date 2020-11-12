@@ -1,3 +1,4 @@
+"use strict";
 const myLocaleStorage = { userName: 'Клусович Никита' };
 class Message {
     constructor({ text, isPersonal = false, to = undefined }) {
