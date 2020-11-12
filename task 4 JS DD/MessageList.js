@@ -1,7 +1,6 @@
+"use strict";
 const Message = require('./Message');
-
 const myLocaleStorage = { userName: 'Клусович Никита' };
-
 class MessageList {
   /**
      * validate using parameter msg.
@@ -166,7 +165,7 @@ class MessageList {
   }
 
   /**
-     * addAll using parametr msgs. Add all msgs elements that passed validation.
+     * addAll using parametr msgs. Add all msgs (Array<Messages>) elements that passed validation.
      * @param {Array} msgs - array of Message.
      * @returns {Array<Message>} -array of messages that failed validation.
      */
