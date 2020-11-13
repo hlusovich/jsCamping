@@ -1,0 +1,39 @@
+{
+    "env": {
+        "browser": true,
+        "es2020": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion":10,
+        "sourceType": "module",
+        "no-underscore-dangle": [
+            "error",
+            {
+                "allowAfterThis": true
+            }
+        ]
+    },
+    "rules": {
+        "no-underscore-dangle": [
+            "error",
+            {
+                "allowAfterThis": true
+            }
+        ],
+        "class-methods-use-this": [
+            "error",
+            {
+                "exceptMethods": [
+                    "user",
+                    "messages",
+                    "id",
+                    "author",
+                    "createdAt"
+                ]
+            }
+        ],
+        "max-classes-per-file": ["error", 2]
+    },
+    "extends": "airbnb-base"
+}
