@@ -1,6 +1,38 @@
-"use strict";
-const Message = require('./Message');
 const myLocaleStorage = { userName: 'Клусович Никита' };
+class Message {
+  constructor({ text, isPersonal = false, to = undefined }) {
+    this._author = myLocaleStorage.userName;
+    this._createdAt = new Date();
+    this._id = new Date().toString();
+    this.isPersonal = isPersonal;
+    this.to = to;
+    this.text = text;
+  }
+
+  get author() {
+    return this._author;
+  }
+
+  set author(value) {
+    return false;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(value) {
+    return false;
+  }
+
+  get createdAt() {
+    return this._createdAt;
+  }
+
+  set createdAt(value) {
+    return false;
+  }
+}
 class MessageList {
   /**
      * validate using parameter msg.
@@ -17,7 +49,7 @@ class MessageList {
      */
   static validate(message) {
     const validateObj = {
-      text: (msg) => msg.text && typeof msg.text === 'string',
+      text: (msg) => msg.text && typeof msg.text === 'string' && msg.text.length <= 200,
       id: (msg) => msg.id && typeof msg.id === 'string',
       createdAt: (msg) => msg.createdAt && msg.createdAt instanceof Date,
       author: (msg) => msg.author && typeof msg.author === 'string',
@@ -65,19 +97,14 @@ class MessageList {
      * @returns {Array} of Message objects
      */
   getPage(skip = 0, top = 10, filterConfig = {}) {
-    const filterObj = {
-      author: (item, author) => !author || item.author.toLowerCase().includes(author.toLowerCase()),
-      text: (item, text) => !text || item.text.toLowerCase().includes(text.toLowerCase()),
-      dateTo: (item, dateTo) => !dateTo || item.createdAt < dateTo,
-      dateFrom: (item, dateFrom) => !dateFrom || item.createdAt > dateFrom,
-    };
     const filterNames = Object.keys(filterConfig);
     const visibleMessages = this._msgs
-      .filter((item) => filterNames.every((name) => filterObj[name](item, filterConfig[name])));
+      .filter((item) => filterNames
+        .every((name) => MessageList.filterObj[name](item, filterConfig[name])));
     return visibleMessages
       .filter((item) => !item.isPersonal || (item.author === this._user || item.to === this._user))
       .sort((a, b) => a.createdAt - b.createdAt)
-      .slice(skip, top);
+      .slice(skip, top + skip);
   }
 
   /**
@@ -335,7 +362,7 @@ const messages = [
   },
 ];
 const messageList = new MessageList(messages);
-console.log(messageList);
+// console.log(messageList);
 console.log(`всего сообщений ${messageList.getPage(0, Infinity).length}`);
 console.log(`валидацию из них проходит  ${messageList.getPage(0, Infinity).map((item) => MessageList.validate(item))}`);
 console.log('получаем первые 10 по умолчанию ');
