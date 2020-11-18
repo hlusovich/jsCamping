@@ -11,7 +11,7 @@
 </head>
 <body>
 <main class="main">
-    <header class="header">
+    <header class="header" id="header">
         <div>
             <div class="header__logo"><img src="assets/images/апельсинка%20без%20фона.png" alt="logo"/></div>
             <h1 class="header__title">Заводной апельсин</h1>
@@ -20,15 +20,7 @@
             <img class="mobile__search-toggle" src="assets/images/filter.png" alt="filter"/>
             <div class="mobile__burger-menu "></div>
         </div>
-        <div class="profile">
-            <div>
-                <div class="user-img yellow">НК</div>
-                <div class="profile__name">Клусович Никита</div>
-            </div>
-            <div>
-                <img class="profile__button-img" src="assets/images/exit.png" alt="exit">
-                <button class="profile__button">Выход</button>
-            </div>
+        <div id="profile" class="profile">
         </div>
     </header>
     <section class="users">
@@ -75,7 +67,7 @@
             </div>
         </article>
     </section>
-    <section class="messages">
+    <section  class="messages">
         <div class="messages-header">
             <div class="messages-header__chat">
                 <div class="messages-header__chat-name  orange">JC</div>
@@ -114,102 +106,8 @@
             <button class="chat-messages-button orange chat-button_active"><img src="assets/images/add%20message.png"
                                                                                 alt="add-message-button"></button>
         </div>
-        <div class="messages-list">
-            <div class="messages-list__item">
-                <div class="user-img green">АК</div>
-                <div class="messages-list__item-data">
-                    <div>Александра Карпова</div>
-                    <div>Не начинайте делать дизайн до лекции в среду!!!!</div>
-                    <div>22 сентября 15:44</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img orange">JC</div>
-                <div class="messages-list__item-data">
-                    <div> jsCamping</div>
-                    <div>Вы выучили все про веб-дизайн и системы контроля
-                        версий?
-                    </div>
-                    <div>22 сентября 15:43</div>
-                </div>
-            </div>
-            <div class="messages-list__your-message">
-                <div class="messages-list__your-message-data">
-                    <div class="messages-list__your-message-edit-and-delete">
-                        <button>
-                            <img src="assets/images/edit.png" alt=""/>
-                        </button>
-                        <button>
-                            <img src="assets/images/delete.png" alt=""/>
-                        </button>
-                    </div>
-                    <div>Да вот как раз этим и занимаемся , делаем чат, к
-                        воскресенью
-                        А какой цвет сочетается с жёлтым???
-                    </div>
-                    <div>22 сентября 15:46</div>
-                </div>
-                <div class="user-img yellow">НК</div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img yellow">БН</div>
-                <div class="messages-list__item-data">
-                    <div> Богдан Навсекайло</div>
-                    <div> выучили
-                    </div>
-                    <div class="messages-list__item-date">22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>Жаль , что я не придумал такой шикарный дизайн для чата</div>
-                    <div>22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>Жаль - жаль</div>
-                    <div>22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>Жаль - жаль, ой ой</div>
-                    <div>22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img yellow">БН</div>
-                <div class="messages-list__item-data">
-                    <div> Богдан Навсекайло</div>
-                    <div> а есть игра по js?
-                    </div>
-                    <div class="messages-list__item-date">22 сентября 16:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>отличная идея</div>
-                    <div>22 сентября 17:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img orange">JC</div>
-                <div class="messages-list__item-data">
-                    <div> jsCamping</div>
-                    <div>смотрите расписание
-                    </div>
-                    <div>22 сентября 18:43</div>
-                </div>
-            </div>
+        <div id="messages-list" class="messages-list">
+
         </div>
     </section>
     <section class="chat-input">
@@ -236,6 +134,24 @@
         </div>
     </footer>
 </main>
-<script src="script.js"></script>
+
 </body>
+<script src="script.js"></script>
+<script>
+
+    const model = new MessageList(messages);
+    const headerView = new HeaderView("profile");
+    const messagesView = new MessagesView("messages-list");
+
+    function initializeUser() {
+        headerView.display(model.user);
+    }
+
+    function createMessages() {
+        messagesView.display(model.getPage(),model.user)
+    }
+    createMessages();
+
+    initializeUser();
+</script>
 </html>

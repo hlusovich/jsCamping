@@ -64,6 +64,7 @@
     width: 5rem;
 }
 
+
 .header__logo {
     width: 6.4rem;
     height: 6.4rem;
@@ -413,11 +414,14 @@
 .messages-list__your-message-data {
     background: var(--chat-color-purple);
     color: white;
-    border-radius: .6rem;
-    padding: 2.0rem 3.0rem 2.0rem 3.0rem;
+    border-radius: 1.6rem;
+    padding: 0.1rem 0.3rem 2.0rem 3.0rem;
     width: 60.0rem;
+    display: flex;
+    flex-flow: column;
 
 }
+
 
 .messages-list__your-message-data div:nth-child(1) {
     font-size: var(--chat-text-font-size);
@@ -425,7 +429,6 @@
 }
 
 .messages-list__your-message-data div:nth-child(2) {
-    text-align: right;
     font-size: var(--chat-text-font-size);
     font-weight: var(--chat-text-font-weight);
 }
@@ -446,7 +449,9 @@
     height: 90%;
 
 }
-
+.mobile{
+    display: none;
+}
 .footer__data-personal {
     font-size: calc(var(--chat-text-font-size));
 }
@@ -491,7 +496,7 @@
 }
 
 .red {
-    background: #F2C94C;
+    background: #f25040;
 }
 
 .purple {
