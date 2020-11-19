@@ -1,20 +1,29 @@
-const myLocaleStorage = {userName: 'Клусович Никита'};
-
 class UserLogos {
     constructor(colorMap = {}) {
         this.colorMap = colorMap;
     }
 
+    /**
+     * return css class using parameter msg.
+     * @param {string} user-which if present in the map is the key for the map,
+     * in the other case, it becomes a key with a random color value.
+     * @returns {string}  a value from the map.
+     */
     createUserIconColor(user) {
-        const colorsList = ["red", "orange", "purple", "yellow", "red", "green", "blue"];
+        const colorsList = ["red", "orange", "purple", "yellow", "red", "green", "blue", "pink"];
         const colorNumber = Math.floor(Math.random() * colorsList.length);
         if (this.colorMap[user]) {
             return this.colorMap[user];
         }
         this.colorMap[user] = colorsList[colorNumber];
-        return this.colorMap[user]
+        return this.colorMap[user];
     }
 
+    /**
+     * returns the first letters of the user's first and last name.
+     * @param {string} user- user name.
+     * @returns {string} - the first letters of the user's first and last name.
+     */
     createUserIconText(user) {
         const iconText = user.split(" ");
         return iconText[0][0] + iconText[1][0];
@@ -25,8 +34,8 @@ class UserLogos {
 const userLogos = new UserLogos();
 
 class Message {
-    constructor({text, isPersonal = false, to = undefined}) {
-        this._author = myLocaleStorage.userName;
+    constructor({text, isPersonal = false, to = undefined}, author) {
+        this._author = author;
         this._createdAt = new Date();
         this._id = new Date().toString();
         this.isPersonal = isPersonal;
@@ -99,7 +108,7 @@ class MessageList {
 
     constructor(msgs) {
         this._msgs = msgs;
-        this._user = myLocaleStorage.userName;
+        this._user = null;
     }
 
     get messages() {
@@ -116,6 +125,12 @@ class MessageList {
 
     set user(value) {
         return false;
+    }
+
+    changeUser(user) {
+        this._user = user;
+        return true;
+
     }
 
     /**
@@ -136,8 +151,9 @@ class MessageList {
                 .every((name) => MessageList.filterObj[name](item, filterConfig[name])));
         return visibleMessages
             .filter((item) => !item.isPersonal || (item.author === this._user || item.to === this._user))
-            .sort((a, b) => a.createdAt - b.createdAt)
-            .slice(skip, top + skip);
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .slice(skip, top + skip)
+            .reverse();
     }
 
     /**
@@ -162,7 +178,7 @@ class MessageList {
      */
 
     add(msg) {
-        const message = new Message(msg);
+        const message = new Message(msg, this.user);
         if (MessageList.validate(message)) {
             this._msgs.push(message);
             return true;
@@ -198,29 +214,30 @@ class MessageList {
 
     edit(id, msg) {
         const oldMessage = this.get(id);
-        if (oldMessage.author !== this._user) {
+        if (oldMessage.author !== this.user) {
             return false;
         }
         const changeMessageParams = (oldMsg) => {
-            const newMsg = {...oldMsg};
-            newMsg.text = msg.text ? msg.text : newMsg.text;
-            newMsg.isPersonal = 'isPersonal' in msg ? msg.isPersonal : newMsg.isPersonal;
+            oldMsg.text = msg.text ? msg.text : oldMsg.text;
+            oldMsg.isPersonal = 'isPersonal' in msg ? msg.isPersonal : oldMsg.isPersonal;
             if (msg.isPersonal && msg.to) {
-                newMsg.isPersonal = msg.isPersonal;
-                newMsg.to = msg.to;
+                oldMsg.isPersonal = msg.isPersonal;
+                oldMsg.to = msg.to;
             } else if (msg.isPersonal === false) {
-                newMsg.isPersonal = msg.isPersonal;
+                oldMsg.isPersonal = msg.isPersonal;
             }
-            if (newMsg.isPersonal === false && newMsg.to) {
-                delete newMsg.to;
+            if (oldMsg.isPersonal === false && oldMsg.to) {
+                delete oldMsg.to;
             }
-            return newMsg;
+            return oldMsg;
         };
         const newMessage = changeMessageParams(oldMessage);
+        newMessage.prototype = Message.prototype;
         if (MessageList.validate(newMessage)) {
             this._msgs = this._msgs.map((item) => (item.id === id ? newMessage : item));
             return true;
         }
+
         return false;
     }
 
@@ -249,9 +266,34 @@ class MessageList {
 
 class UserList {
     constructor(users, activeUsers) {
-        this.users = users;
-        this.activeUsers = activeUsers;
+        this._users = users;
+        this._activeUsers = activeUsers;
     }
+
+    get users() {
+        return this._users;
+    }
+
+    set users(value) {
+        return;
+    }
+
+    get activeUsers() {
+        return this._activeUsers;
+    }
+
+    set activeUsers(value) {
+        return;
+    }
+
+    appendUser(user) {
+        if (!this.users().find(item => item === user)) {
+            this.users().push(user);
+            return true;
+        }
+        return false;
+    }
+
 
 }
 
@@ -261,8 +303,14 @@ class HeaderView {
         this.containerId = containerId;
     }
 
+    /**
+     * adds to elements with id===containerId depending on whether the user value is true.
+     * @param {string || undefined} user - name of the validated user or undefined if user unvalidated.
+     */
+
     display(user) {
         const container = document.getElementById(this.containerId);
+        container.innerHTML = "";
         if (user) {
             const profileUserData = document.createElement("div");
             const profileUserName = document.createElement("div");
@@ -302,6 +350,7 @@ class MessagesView {
     display(msgs, user) {
         const messagesList = document.getElementById(this.containerId);
         const messageListFragment = document.createDocumentFragment();
+        const monthArray = ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Cентября", "Октября", "Ноября", "Декабря"];
 
         function createMessage(msg) {
             const message = document.createElement("div");
@@ -311,7 +360,8 @@ class MessagesView {
             const text = document.createElement("div");
             const messageFragment = document.createDocumentFragment();
             userImg.innerText = userLogos.createUserIconText(msg.author);
-            time.innerText = msg.createdAt;
+            time.innerText = `${msg.createdAt.getHours()}:${msg.createdAt.getMinutes() > 9 ? msg.createdAt.getMinutes() : "0" + msg.createdAt.getMinutes()} 
+            ${msg.createdAt.getDate()} ${monthArray[msg.createdAt.getMonth()]}`;
             text.innerText = msg.text;
             userImg.classList.add("user-img", userLogos.createUserIconColor(msg.author));
             if (user === msg.author) {
@@ -322,6 +372,7 @@ class MessagesView {
                 const editImg = document.createElement("img");
                 message.classList.add("messages-list__your-message");
                 userBtns.classList.add("messages-list__your-message-edit-and-delete");
+                time.classList.add("time");
                 editImg.src = "assets/images/edit.png";
                 deleteImg.src = "assets/images/delete.png";
                 editBtn.appendChild(editImg);
@@ -349,11 +400,11 @@ class MessagesView {
             }
 
             messageListFragment.appendChild(message);
-
         }
 
         msgs.map(item => createMessage(item));
-        messagesList.appendChild(messageListFragment);
+        messagesList.prepend(messageListFragment);
+
     }
 
 }
@@ -385,14 +436,26 @@ class ActiveUsersView {
         this.containerId = containerId;
     }
 
-}
-
-class FilterView {
-    constructor(containerId) {
-        this.containerId = containerId;
+    display(activeUsers) {
+        const userList = document.getElementById(this.containerId);
+        const fragment = document.createDocumentFragment();
+        activeUsers.map(activeUser => {
+            const user = document.createElement("div");
+            user.classList.add("user");
+            const userLogo = document.createElement("div");
+            userLogo.classList.add("user-img", userLogos.createUserIconColor(activeUser));
+            userLogo.innerText = userLogos.createUserIconText(activeUser);
+            const userName = document.createElement("div");
+            userName.innerText = activeUser;
+            user.appendChild(userLogo);
+            user.appendChild(userName);
+            fragment.appendChild(user);
+        });
+        userList.appendChild(fragment);
     }
 
 }
+
 
 const messages = [
     {
@@ -464,13 +527,13 @@ const messages = [
         createdAt: new Date('2020-10-13T02:00:00'),
         author: 'Клусович Никита',
         isPersonal: true,
-        to: 'Евгений Жибрак',
+        to: 'Евгений Жибрик',
     },
     {
         id: '11',
         text: 'Указыай что именно',
         createdAt: new Date('2020-10-13T03:00:01'),
-        author: 'Евгений Жибрак',
+        author: 'Евгений Жибрик',
         isPersonal: true,
         to: 'Клусович Никита',
     },
@@ -480,7 +543,7 @@ const messages = [
         createdAt: new Date('2020-10-13T23:01:00'),
         author: 'Js Camping',
         isPersonal: true,
-        to: 'Евгений Жибрак',
+        to: 'Евгений Жибрик',
     },
     {
         id: '13',
@@ -541,3 +604,5 @@ const messages = [
         to: 'Носик Кокосик',
     },
 ];
+
+

@@ -64,6 +64,7 @@
     width: 5rem;
 }
 
+
 .header__logo {
     width: 6.4rem;
     height: 6.4rem;
@@ -123,9 +124,15 @@
 
 }
 
+
 .messages-list__your-message-edit-and-delete {
     display: flex;
     justify-content: flex-end;
+}
+
+.time {
+    text-align: right;
+    margin-right: 2rem;
 }
 
 .messages-list__your-message-edit-and-delete button {
@@ -168,7 +175,24 @@
     display: flex;
     align-items: center;
     height: 4.5rem;
+    margin-bottom: 5%;
+}
+
+.users-types {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+}
+.users-types span{
+    font-size: calc(var(--chat-text-font-size) );
+    margin-left: 20%;
     margin-bottom: 10%;
+    cursor: pointer;
+}
+.users-types span:nth-child(2){
+    border-bottom: 1px solid grey;
+
 }
 
 .user-search input {
@@ -407,17 +431,20 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 70.0rem;
+    width: 60rem;
 }
 
 .messages-list__your-message-data {
     background: var(--chat-color-purple);
     color: white;
-    border-radius: .6rem;
-    padding: 2.0rem 3.0rem 2.0rem 3.0rem;
-    width: 60.0rem;
+    border-radius: 1.6rem;
+    padding: 0.1rem 0.3rem 2.0rem 3.0rem;
+    width: 50.0rem;
+    display: flex;
+    flex-flow: column;
 
 }
+
 
 .messages-list__your-message-data div:nth-child(1) {
     font-size: var(--chat-text-font-size);
@@ -425,7 +452,6 @@
 }
 
 .messages-list__your-message-data div:nth-child(2) {
-    text-align: right;
     font-size: var(--chat-text-font-size);
     font-weight: var(--chat-text-font-weight);
 }
@@ -445,6 +471,10 @@
     justify-content: space-between;
     height: 90%;
 
+}
+
+.mobile {
+    display: none;
 }
 
 .footer__data-personal {
@@ -491,7 +521,7 @@
 }
 
 .red {
-    background: #F2C94C;
+    background: #f25040;
 }
 
 .purple {
@@ -500,6 +530,10 @@
 
 .orange {
     background: var(--chat-color-orange);
+}
+
+.pink {
+    background: pink;
 }
 
 .blue {
@@ -531,11 +565,6 @@
 .button-disabled {
     background: #FCA34F;
     cursor: not-allowed;
-}
-
-.messages-list::-webkit-scrollbar {
-    width: .0rem;
-    background-color: #6e7580;
 }
 
 
