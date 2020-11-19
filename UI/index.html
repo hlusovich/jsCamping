@@ -11,7 +11,7 @@
 </head>
 <body>
 <main class="main">
-    <header class="header">
+    <header class="header" id="header">
         <div>
             <div class="header__logo"><img src="assets/images/апельсинка%20без%20фона.png" alt="logo"/></div>
             <h1 class="header__title">Заводной апельсин</h1>
@@ -20,15 +20,7 @@
             <img class="mobile__search-toggle" src="assets/images/filter.png" alt="filter"/>
             <div class="mobile__burger-menu "></div>
         </div>
-        <div class="profile">
-            <div>
-                <div class="user-img yellow">НК</div>
-                <div class="profile__name">Клусович Никита</div>
-            </div>
-            <div>
-                <img class="profile__button-img" src="assets/images/exit.png" alt="exit">
-                <button class="profile__button">Выход</button>
-            </div>
+        <div id="profile" class="profile">
         </div>
     </header>
     <section class="users">
@@ -36,50 +28,18 @@
             <img src="assets/images/ant-design_search-outlined.png" alt="search-icon"/>
             <input placeholder="Поиск"/>
         </div>
-        <article class="users-list">
-            <div class="user">
-                <div class="user-img orange">JC</div>
-                <div class="user__name">jsCamping</div>
-            </div>
-            <div class="user">
-                <div class="user-img blue">ЯЯ</div>
-                <div class="user__name">Яна Ярошевич</div>
-            </div>
-            <div class="user">
-                <div class="user-img green">АК</div>
-                <div class="user__name">Александра Карпова</div>
-            </div>
-            <div class="user">
-                <div class="user-img yellow">ВВ</div>
-                <div class="user__name">Виктор Виницкий</div>
-            </div>
-            <div class="user">
-                <div class="user-img red">БН</div>
-                <div class="user__name">Богдан Навсекайло</div>
-            </div>
-            <div class="user">
-                <div class="user-img green">ДА</div>
-                <div class="user__name">Дэн Абрамов</div>
-            </div>
-            <div class="user">
-                <div class="user-img purple">МЦ</div>
-                <div class="user__name">Марк Цукенберг</div>
-            </div>
-            <div class="user">
-                <div class="user-img green">ИМ</div>
-                <div class="user__name">Илон Маск</div>
-            </div>
-            <div class="user">
-                <div class="user-img red">РР</div>
-                <div class="user__name">Роберт Родригез</div>
-            </div>
+        <div class="users-types">
+            <span class="users-types__all">Все</span>
+            <span class="users-types__onlain">Онлайн</span>
+        </div>
+        <article id="users-list" class="users-list">
         </article>
     </section>
     <section class="messages">
         <div class="messages-header">
             <div class="messages-header__chat">
-                <div class="messages-header__chat-name  orange">JC</div>
-                <span>JsCamping</span>
+                <div class="messages-header__chat-name  orange">DC</div>
+                <span>DM Courses</span>
             </div>
             <article class="filters">
                 <div class="filters__item">
@@ -114,102 +74,8 @@
             <button class="chat-messages-button orange chat-button_active"><img src="assets/images/add%20message.png"
                                                                                 alt="add-message-button"></button>
         </div>
-        <div class="messages-list">
-            <div class="messages-list__item">
-                <div class="user-img green">АК</div>
-                <div class="messages-list__item-data">
-                    <div>Александра Карпова</div>
-                    <div>Не начинайте делать дизайн до лекции в среду!!!!</div>
-                    <div>22 сентября 15:44</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img orange">JC</div>
-                <div class="messages-list__item-data">
-                    <div> jsCamping</div>
-                    <div>Вы выучили все про веб-дизайн и системы контроля
-                        версий?
-                    </div>
-                    <div>22 сентября 15:43</div>
-                </div>
-            </div>
-            <div class="messages-list__your-message">
-                <div class="messages-list__your-message-data">
-                    <div class="messages-list__your-message-edit-and-delete">
-                        <button>
-                            <img src="assets/images/edit.png" alt=""/>
-                        </button>
-                        <button>
-                            <img src="assets/images/delete.png" alt=""/>
-                        </button>
-                    </div>
-                    <div>Да вот как раз этим и занимаемся , делаем чат, к
-                        воскресенью
-                        А какой цвет сочетается с жёлтым???
-                    </div>
-                    <div>22 сентября 15:46</div>
-                </div>
-                <div class="user-img yellow">НК</div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img yellow">БН</div>
-                <div class="messages-list__item-data">
-                    <div> Богдан Навсекайло</div>
-                    <div> выучили
-                    </div>
-                    <div class="messages-list__item-date">22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>Жаль , что я не придумал такой шикарный дизайн для чата</div>
-                    <div>22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>Жаль - жаль</div>
-                    <div>22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>Жаль - жаль, ой ой</div>
-                    <div>22 сентября 15:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img yellow">БН</div>
-                <div class="messages-list__item-data">
-                    <div> Богдан Навсекайло</div>
-                    <div> а есть игра по js?
-                    </div>
-                    <div class="messages-list__item-date">22 сентября 16:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img purple">МЦ</div>
-                <div class="messages-list__item-data">
-                    <div>Марк Цукенберг</div>
-                    <div>отличная идея</div>
-                    <div>22 сентября 17:49</div>
-                </div>
-            </div>
-            <div class="messages-list__item">
-                <div class="user-img orange">JC</div>
-                <div class="messages-list__item-data">
-                    <div> jsCamping</div>
-                    <div>смотрите расписание
-                    </div>
-                    <div>22 сентября 18:43</div>
-                </div>
-            </div>
+        <div id="messages-list" class="messages-list">
+
         </div>
     </section>
     <section class="chat-input">
@@ -236,6 +102,88 @@
         </div>
     </footer>
 </main>
-<script src="script.js"></script>
+
 </body>
+<script src="script.js"></script>
+<script>
+    let messageCount = 0;
+    const users = ["Js Camping", "Яна Ярошевич", "Виктор Виницкий", "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
+        "Дэн Абрамов", "Богдан Навсекайло", "Александра Карпова", "Носик Кокосик", "Евгений Жибрак", "Клусович Никита"];
+    const activeUsers = ["Js Camping", "Яна Ярошевич", 'Виктор Винницкий', "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
+        "Дэн Абрамов", "Богдан Навсекайло", 'Евгений Жибрик', 'Клусович Никита', "Носик Кокосик"];
+    const model = new MessageList(messages);
+    const headerView = new HeaderView("profile");
+    const messagesView = new MessagesView("messages-list");
+    const activeUsersView = new ActiveUsersView("users-list");
+    const userList = new UserList(users, activeUsers);
+
+    function setCurrentUser(user) {
+        if (model.changeUser(user)) {
+            headerView.display(user);
+            const messagesList = document.getElementById("messages-list");
+            messagesList.innerHTML = "";
+            messagesView.display(model.getPage(0, messageCount), model.user);
+        }
+    }
+
+    function addMessage({text, isPersonal = false, to}) {
+        if (model.add({text, isPersonal, to})) {
+            const messagesList = document.getElementById("messages-list");
+            messagesList.innerHTML = "";
+            messageCount += 1;
+            messagesView.display(model.getPage(0, messageCount), model.user);
+            messageList.scrollTo(0, messageList.scrollHeight);
+            console.log(model.messages)
+        }
+
+    }
+
+    function editMessage(id, {text, isPersonal = false, to}) {
+        if (model.edit(id, {text, isPersonal, to})) {
+            const messagesList = document.getElementById("messages-list");
+            messagesList.innerHTML = "";
+            messagesView.display(model.getPage(0, messageCount), model.user);
+
+        }
+
+    }
+
+    function removeMessage(id) {
+        if (model.remove(id)) {
+            const messagesList = document.getElementById("messages-list");
+            messagesList.innerHTML = "";
+            messageCount -= 1;
+            messagesView.display(model.getPage(0, messageCount), model.user);
+        }
+    }
+
+    function showMessages(skip, top = 10, filterConfig) {
+        messagesView.display(model.getPage(messageCount, top, filterConfig), model.user);
+        messageCount += top;
+    }
+
+    function showActiveUsers() {
+        activeUsersView.display(userList.activeUsers);
+    }
+
+    setCurrentUser();
+    setCurrentUser("Клусович Никита");
+    showMessages();
+    showActiveUsers();
+    const messageList = document.getElementById("messages-list");
+    messageList.scrollTo(0, messageList.scrollHeight);
+    // имитация действий пользователя - вызовы методов addMessage, removeMessage, editMessage
+    addMessage({text: "добавленное сообщение, имитиация лисенера события"});
+    addMessage({text: "гурбангулы мухамедов открыл памятник алабаю"});
+    console.log("меняем юзера");
+    setCurrentUser("Js Camping");
+    addMessage({text: "звучит как скороговорка"});
+    addMessage({text: "добавленное сообщение, имитиация лисенера события2"});
+    editMessage('10', {text: "нужно зарегистрировать логотип"});
+    console.log("получаем еще 10 messages");
+    showMessages(10, 10);
+    console.log("удаляем сообщение с индексом 9");
+
+
+</script>
 </html>
