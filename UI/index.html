@@ -102,88 +102,13 @@
         </div>
     </footer>
 </main>
-
 </body>
-<script src="script.js"></script>
-<script>
-    let messageCount = 0;
-    const users = ["Js Camping", "Яна Ярошевич", "Виктор Виницкий", "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
-        "Дэн Абрамов", "Богдан Навсекайло", "Александра Карпова", "Носик Кокосик", "Евгений Жибрак", "Клусович Никита"];
-    const activeUsers = ["Js Camping", "Яна Ярошевич", 'Виктор Винницкий', "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
-        "Дэн Абрамов", "Богдан Навсекайло", 'Евгений Жибрик', 'Клусович Никита', "Носик Кокосик"];
-    const model = new MessageList(messages);
-    const headerView = new HeaderView("profile");
-    const messagesView = new MessagesView("messages-list");
-    const activeUsersView = new ActiveUsersView("users-list");
-    const userList = new UserList(users, activeUsers);
-
-    function setCurrentUser(user) {
-        if (model.changeUser(user)) {
-            headerView.display(user);
-            const messagesList = document.getElementById("messages-list");
-            messagesList.innerHTML = "";
-            messagesView.display(model.getPage(0, messageCount), model.user);
-        }
-    }
-
-    function addMessage({text, isPersonal = false, to}) {
-        if (model.add({text, isPersonal, to})) {
-            const messagesList = document.getElementById("messages-list");
-            messagesList.innerHTML = "";
-            messageCount += 1;
-            messagesView.display(model.getPage(0, messageCount), model.user);
-            messageList.scrollTo(0, messageList.scrollHeight);
-            console.log(model.messages)
-        }
-
-    }
-
-    function editMessage(id, {text, isPersonal = false, to}) {
-        if (model.edit(id, {text, isPersonal, to})) {
-            const messagesList = document.getElementById("messages-list");
-            messagesList.innerHTML = "";
-            messagesView.display(model.getPage(0, messageCount), model.user);
-
-        }
-
-    }
-
-    function removeMessage(id) {
-        if (model.remove(id)) {
-            const messagesList = document.getElementById("messages-list");
-            messagesList.innerHTML = "";
-            messageCount -= 1;
-            messagesView.display(model.getPage(0, messageCount), model.user);
-        }
-    }
-
-    function showMessages(skip, top = 10, filterConfig) {
-        messagesView.display(model.getPage(messageCount, top, filterConfig), model.user);
-        messageCount += top;
-    }
-
-    function showActiveUsers() {
-        activeUsersView.display(userList.activeUsers);
-    }
-
-    setCurrentUser();
-    setCurrentUser("Клусович Никита");
-    showMessages();
-    showActiveUsers();
-    const messageList = document.getElementById("messages-list");
-    messageList.scrollTo(0, messageList.scrollHeight);
-    // имитация действий пользователя - вызовы методов addMessage, removeMessage, editMessage
-    addMessage({text: "добавленное сообщение, имитиация лисенера события"});
-    addMessage({text: "гурбангулы мухамедов открыл памятник алабаю"});
-    console.log("меняем юзера");
-    setCurrentUser("Js Camping");
-    addMessage({text: "звучит как скороговорка"});
-    addMessage({text: "добавленное сообщение, имитиация лисенера события2"});
-    editMessage('10', {text: "нужно зарегистрировать логотип"});
-    console.log("получаем еще 10 messages");
-    showMessages(10, 10);
-    console.log("удаляем сообщение с индексом 9");
-
-
-</script>
+<script src="classes/UserLogo.js"></script>
+<script src="classes/Message.js"></script>
+<script src="classes/MessageList.js"></script>
+<script src="classes/UserList.js"></script>
+<script src="classes/HeaderView.js"></script>
+<script src="classes/MessageView.js"></script>
+<script src="classes/ActiveUsers.js"></script>
+<script src="classes/globalFunctions.js"></script>
 </html>
