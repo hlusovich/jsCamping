@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="Ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+    <title>Tic tac toe</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+</head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="header__logo">
+            <div class="header__menu header__menu">
+                <div class="header__menu-line">
+                    <div class="header__menu-line-long purple white"></div>
+                    <div class="header__menu-line-short yellow white"></div>
+                </div>
+                <div class="header__menu-line">
+                    <div class="header__menu-line-short pink white"></div>
+                    <div class="header__menu-line-long yellow white"></div>
+                </div>
+                <div class="header__menu-line">
+                    <div class="header__menu-line-long pink white"></div>
+                    <div class="header__menu-line-short purple white"></div>
+                </div>
+            </div>
+            <div class="header__title">T<span>i</span>c-<span>Ta</span>c-<span>T</span>o<span>e</span></div>
+        </div>
+        <div class="header__switch">
+            <button class="header__switch-button"></button>
+            <div class="header__switch-button-text">Green</div>
+        </div>
+    </div>
+</header>
+<main id="main">
+    <div id="field" class="field"></div>
+    <aside id="aside" class="aside aside_left">
+        <div class="aside_item">Start</div>
+    </aside>
+    <div class="modal" id="modal">
+        <div>
+            <h1></h1>
+        </div>
+    </div>
+</main>
+<script src="classes/model.js"></script>
+<script src="classes/finalScreenView.js"></script>
+<script src="classes/controller.js"></script>
+<script src="classes/fieldView.js"></script>
+<script src="classes/ceilsView.js"></script>
+<script src="classes/switchButtonView.js"></script>
+<script src="classes/shortLinesView.js"></script>
+<script src="classes/longLinesView.js"></script>
+<script src="classes/asideView.js"></script>
+<script src="classes/controlerInstance.js"></script>
+</body>
+
+</html>
