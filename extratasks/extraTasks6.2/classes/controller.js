@@ -1,4 +1,3 @@
-
 class Controller {
     constructor() {
         this.model = new Model();
@@ -29,7 +28,7 @@ class Controller {
                     this.model.changeSymbol();
                     const randomCeil = this.model.fillCeilByComputer();
                     if (randomCeil) {
-                        Array.from(this.ceilsView.ceils).find(item=>+item.getAttribute("number")===randomCeil).dispatchEvent(this.event);
+                        Array.from(this.ceilsView.ceils).find(item => +item.getAttribute("number") === randomCeil).dispatchEvent(this.event);
                     }
                 }
             }
@@ -56,7 +55,7 @@ class Controller {
             this.model.count = 0;
             this.model.playerData = [];
             this.model.computerData = [];
-            this.model.ceils = [1,2,3,4,5,6,7,8,9];
+            this.model.ceils = [1, 2, 3, 4, 5, 6, 7, 8, 9];
             this.model.victory = false;
         });
     }
