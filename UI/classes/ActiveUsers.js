@@ -2,7 +2,6 @@ class ActiveUsersView {
     constructor(containerId) {
         this.containerId = containerId;
     }
-
     display(activeUsers) {
         const userList = document.getElementById(this.containerId);
         const fragment = document.createDocumentFragment();
@@ -18,6 +17,7 @@ class ActiveUsersView {
             user.appendChild(userName);
             fragment.appendChild(user);
         });
+        userList.innerHTML="";
         userList.appendChild(fragment);
     }
 

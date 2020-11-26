@@ -16,11 +16,11 @@ class HeaderView {
             const profileUserName = document.createElement("div");
             const profileUserIcon = document.createElement("div");
             const exitButton = document.createElement("button");
+            exitButton.id = "exit-btn";
             profileUserIcon.classList.add("user-img", userLogo.createUserIconColor(user));
             profileUserIcon.innerText = userLogo.createUserIconText(user);
             profileUserName.innerText = user;
             exitButton.innerText = "Выход";
-            exitButton.id = "exit";
             exitButton.classList.add("profile__button");
             profileUserData.appendChild(profileUserIcon);
             profileUserData.appendChild(profileUserName);
