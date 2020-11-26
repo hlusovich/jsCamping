@@ -6,8 +6,6 @@ class MessagesView {
     display(msgs, user) {
         const messagesList = document.getElementById(this.containerId);
         const messageListFragment = document.createDocumentFragment();
-        const monthArray = ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Cентября", "Октября", "Ноября", "Декабря"];
-
         function createMessage(msg) {
             const message = document.createElement("div");
             const userImg = document.createElement("div");
@@ -30,9 +28,13 @@ class MessagesView {
                 userBtns.classList.add("messages-list__your-message-edit-and-delete");
                 time.classList.add("time");
                 editImg.src = "assets/images/edit.png";
+                editBtn.classList.add("message__edit-btn");
                 deleteImg.src = "assets/images/delete.png";
+                deleteBtn.classList.add("message__delete-btn");
                 editBtn.appendChild(editImg);
+                editBtn.setAttribute("id", msg.id);
                 deleteBtn.appendChild(deleteImg);
+                deleteBtn.setAttribute("id", msg.id);
                 userBtns.appendChild(editBtn);
                 userBtns.appendChild(deleteBtn);
                 messageData.classList.add('messages-list__your-message-data');
