@@ -33,11 +33,15 @@ class MessageList {
                 return false;
             },
         };
+        console.log(message)
         return Object.keys(validateObj).every((name) => validateObj[name](message));
     }
 
-    constructor(msgs) {
-        this._msgs = msgs;
+    constructor() {
+        this._msgs = JSON.parse(sessionStorage.getItem('messages') ?? '[]').map(i => {
+            i.createdAt = new Date(Date.parse(i.createdAt));
+            return i;
+        });
         this._user = null;
     }
 
@@ -110,6 +114,12 @@ class MessageList {
     add(msg) {
         const message = new Message(msg, this.user);
         if (MessageList.validate(message)) {
+            const messages = JSON.parse(sessionStorage.getItem('messages') ?? '[]').map(i => {
+                i.createdAt = new Date(Date.parse(i.createdAt));
+                return i;
+            });
+            messages.push(message);
+            sessionStorage.setItem("messages", JSON.stringify(messages));
             this._msgs.push(message);
             return true;
         }
@@ -127,6 +137,11 @@ class MessageList {
     remove(id) {
         if (this.get(id) && this.get(id).author === this._user) {
             this._msgs = this._msgs.filter((item) => item.id !== id);
+            const messages = JSON.parse(sessionStorage.getItem('messages') ?? '[]').map(i => {
+                i.createdAt = new Date(Date.parse(i.createdAt));
+                return i;
+            });
+            sessionStorage.setItem("messages", JSON.stringify(messages.filter((item) => item.id !== id)));
             return true;
         }
         return false;
@@ -165,6 +180,11 @@ class MessageList {
         newMessage.prototype = Message.prototype;
         if (MessageList.validate(newMessage)) {
             this._msgs = this._msgs.map((item) => (item.id === id ? newMessage : item));
+            const messages = JSON.parse(sessionStorage.getItem('messages') ?? '[]').map(i => {
+                i.createdAt = new Date(Date.parse(i.createdAt));
+                return i;
+            });
+            sessionStorage.setItem("messages", JSON.stringify(this._msgs));
             return true;
         }
 

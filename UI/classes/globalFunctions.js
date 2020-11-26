@@ -1,10 +1,172 @@
 const monthArray = ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Cентября", "Октября", "Ноября", "Декабря"];
+const messages = [
+    {
+        id: '1',
+        text: 'Привет!',
+        createdAt: new Date('2020-10-10T23:10:05').toString(),
+        author: 'Js Camping',
+        isPersonal: false,
+    },
+    {
+        id: '2',
+        text: 'Привет!',
+        createdAt: new Date('2020-10-10T23:10:04').toString(),
+        author: 'Богдан Навсекайло',
+        isPersonal: false,
+    },
+    {
+        id: '3',
+        text: 'Привет!',
+        createdAt: new Date('2020-10-12T23:13:01').toString(),
+        author: 'Яна Ярошевич',
+        isPersonal: false,
+    },
+    {
+        id: '4',
+        text: 'А через js надо изменять HTML?!',
+        createdAt: new Date('2020-10-12T23:22:11').toString(),
+        author: 'Вероника Кор',
+        isPersonal: false,
+    },
+    {
+        id: '5',
+        text: 'Нет пока занятия ознакомительные!',
+        createdAt: new Date('2020-10-16T00:10:02').toString(),
+        author: 'Js Camping',
+        isPersonal: false,
+    },
+    {
+        id: '6',
+        text: 'Нет пока занятия ознакомительные!',
+        createdAt: new Date('2020-10-14T00:08:09').toString(),
+        author: 'Js Camping',
+        isPersonal: false,
+    },
+    {
+        id: '7',
+        text: 'Лекция уже кстати на гугл диске',
+        createdAt: new Date('2020-10-12T00:09:00').toString(),
+        author: 'Js Camping',
+        isPersonal: false,
+    },
+    {
+        id: '8',
+        text: 'О можно мoтать',
+        createdAt: new Date('2020-10-12T00:14:08').toString(),
+        author: 'Виктор Винницкий',
+        isPersonal: false,
+    },
+    {
+        id: '9',
+        text: 'Может тогда перенесем на пораньше?',
+        createdAt: new Date('2020-10-13T01:00:00').toString(),
+        author: 'Клусович Никита',
+        isPersonal: false,
+    },
+    {
+        id: '10',
+        text: 'Пофиксил ехтра таски',
+        createdAt: new Date('2020-10-13T02:00:00').toString(),
+        author: 'Клусович Никита',
+        isPersonal: true,
+        to: 'Евгений Жибрик',
+    },
+    {
+        id: '11',
+        text: 'Указыай что именно',
+        createdAt: new Date('2020-10-13T03:00:01').toString(),
+        author: 'Евгений Жибрик',
+        isPersonal: true,
+        to: 'Клусович Никита',
+    },
+    {
+        id: '12',
+        text: 'Там на стрим пустите))',
+        createdAt: new Date('2020-10-13T23:01:00').toString(),
+        author: 'Js Camping',
+        isPersonal: true,
+        to: 'Евгений Жибрик',
+    },
+    {
+        id: '13',
+        text: 'Учитесь гуглить',
+        createdAt: new Date('2020-10-13T23:00:00').toString(),
+        author: 'Js Camping',
+        isPersonal: false,
+    },
+    {
+        id: '14',
+        text: 'Зацените кодеварс',
+        createdAt: new Date('2020-10-12T23:05:01').toString(),
+        author: 'Яна Ярошевич',
+        isPersonal: false,
+    },
+    {
+        id: '15',
+        text: 'а где документ с домашками?',
+        createdAt: new Date('2020-10-17T23:01:00').toString(),
+        author: 'Носик Кокосик',
+        isPersonal: false,
+    },
+    {
+        id: '16',
+        text: 'Вот тут по этой ссылочке ....',
+        createdAt: new Date('2020-10-17T23:01:05').toString(),
+        author: 'Js Camping',
+        isPersonal: false,
+    },
+    {
+        id: '17',
+        text: 'спасибо',
+        createdAt: new Date('2020-10-12T23:02:01').toString(),
+        author: 'Носик Кокосик',
+        isPersonal: false,
+    },
+    {
+        id: '18',
+        text: 'не могла найти',
+        createdAt: new Date('2020-10-12T23:22:00').toString(),
+        author: 'Носик Кокосик',
+        isPersonal: false,
+    },
+    {
+        id: '19',
+        text: 'когда стрим?можно на утренний?',
+        createdAt: new Date('2020-10-12T23:40:00').toString(),
+        author: 'Носик Кокосик',
+        isPersonal: true,
+        to: 'Js Camping',
+    },
+    {
+        id: '20',
+        text: 'через 20 минут',
+        createdAt: new Date('2020-10-12T23:54:10').toString(),
+        author: 'Js Camping',
+        isPersonal: true,
+        to: 'Носик Кокосик',
+    },
+];
+const users = ["Js Camping", "Яна Ярошевич", "Виктор Виницкий", "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
+    "Дэн Абрамов", "Богдан Навсекайло", "Александра Карпова", "Носик Кокосик", "Евгений Жибрик", "Клусович Никита"];
+if (!sessionStorage.getItem('users')) {
+    sessionStorage.setItem("users", JSON.stringify(users));
+}
+if (!sessionStorage.getItem('messages')) {
+    sessionStorage.setItem("messages", JSON.stringify(messages));
+}
+const activeUsers = ["Js Camping", "Яна Ярошевич", 'Виктор Виннцкий', "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
+];
 const controller = new Controller();
+controller.showMessages();
+controller.showMessages();
 controller.showMessages();
 controller.showAllUsers();
 let allUsers = true;
 let id = null;
 let editFlag = null;
+let mouseClickEvent = new Event("click");
+let isPrivate = false;
+let personTo = null;
 const addMessageButton = document.getElementById("add-msg-btn");
 const messageList = document.getElementById("messages-list");
 const messageInput = document.getElementById("message-input");
@@ -24,11 +186,12 @@ const messagesBlock = document.getElementById("messages");
 const main = document.getElementById("main");
 const chatInput = document.getElementById("chat-input");
 const headerLogo = document.getElementById("header-logo");
+const signInFormBtn = document.getElementById("sign-in-btn");
+const userList = document.getElementById("users-list");
 controller.setCurrentUser("Клусович Никита", messageInput, messageBtn, messageList);
-let signInBtn = null;
-const exitBtn = document.getElementById("exit-btn");
-let regButton = null;
-
+let signInBtn = document.getElementById("sign-in");
+let exitBtn = document.getElementById("exit-btn");
+let checkInButton = document.getElementById("check-in");
 addMessageButton.addEventListener("click", () => {
     controller.showMessages();
 });
@@ -46,11 +209,16 @@ messageList.addEventListener("click", (e) => {
 messageBtn.addEventListener("click", () => {
     if (messageInput.value) {
         if (editFlag) {
-            controller.editMessage(id, {text: messageInput.value});
+            controller.editMessage(id, {text: messageInput.value,isPersonal:personTo,to:isPrivate});
             id = null;
             messageInput.value = "";
             editFlag = false;
-        } else {
+        }
+        else if(isPrivate){
+            controller.addMessage({text:messageInput.value, isPersonal:personTo, to:isPrivate},messageList);
+            messageInput.value = "";
+        }
+        else {
             controller.addMessage({text: messageInput.value});
             messageInput.value = "";
         }
@@ -129,34 +297,99 @@ function changeFilterButtonsState(e = false) {
 }
 
 exitBtn.addEventListener("click", () => {
-    controller.removeUser(undefined, messageInput, messageBtn, messageList);
-    regButton = document.getElementById("check-in");
-    signInBtn = document.getElementById("sign-in");
-    regButton.addEventListener("click", () => {
-        usersBlock.style.display = "none";
-        messagesBlock.style.display = "none";
-        chatInput.style.display = "none";
-        document.forms[0].style.display = "flex";
-        main.classList.add("main-form")
-    });
-    signInBtn.addEventListener("click", () => {
-        usersBlock.style.display = "none";
-        messagesBlock.style.display = "none";
-        chatInput.style.display = "none";
-        document.forms[0].style.display = "flex";
-        main.classList.add("main-form")
-    });
+    checkOutFunction();
+});
 
-    headerLogo.addEventListener("click", () => {
-        usersBlock.style.display = "flex";
-        messagesBlock.style.display = "flex";
-        chatInput.style.display = "flex";
-        document.forms[0].style.display = "none";
-        main.classList.remove("main-form")
-    })
+headerLogo.addEventListener("click", () => {
+    usersBlock.style.display = "flex";
+    messagesBlock.style.display = "flex";
+    chatInput.style.display = "flex";
+    document.forms[0].style.display = "none";
+    document.forms[1].style.display = "none";
+    main.classList.remove("main-form")
 });
 
 
+formBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    controller.addUser(document.forms[0].name.value);
+    exitBtn.removeEventListener("click", checkOutFunction);
+    controller.setCurrentUser(document.forms[0].name.value, messageInput, messageBtn, messageList);
+    usersBlock.style.display = "flex";
+    messagesBlock.style.display = "flex";
+    chatInput.style.display = "flex";
+    document.forms[0].style.display = "none";
+    document.forms[1].style.display = "none";
+    main.classList.remove("main-form");
+    exitBtn = document.getElementById("exit-btn");
+    exitBtn.addEventListener("click", () => {
+        checkOutFunction();
+    })
+});
+signInFormBtn.addEventListener("click",(e)=>{
+    e.preventDefault();
+    controller.addUser(document.forms[1].name.value);
+    exitBtn.removeEventListener("click", checkOutFunction);
+    controller.setCurrentUser(document.forms[1].name.value, messageInput, messageBtn, messageList);
+    usersBlock.style.display = "flex";
+    messagesBlock.style.display = "flex";
+    chatInput.style.display = "flex";
+    document.forms[0].style.display = "none";
+    document.forms[1].style.display = "none";
+    main.classList.remove("main-form");
+    exitBtn = document.getElementById("exit-btn");
+    exitBtn.addEventListener("click", () => {
+        checkOutFunction();
+    })
+});
+userList.addEventListener("click",(e)=>{
+    if(e.target.classList[0]==="user-img"){
+        controller.getPrivateMessages(e.target.nextSibling.innerText,messageList);
+    }
+    if(e.target.nextSibling.innerText==="Js Camping"){
+        isPrivate = false;
+        personTo = null;
+    }
+    else{
+        isPrivate = e.target.nextSibling.innerText ;
+        personTo = true;
+    }
+});
+function checkOutFunction() {
+    if (checkInButton) {
+        signInBtn.removeEventListener("click", singIn);
+        checkInButton.removeEventListener("click", checkIn);
+    }
+    controller.removeUser(undefined, messageInput, messageBtn, messageList);
+    checkInButton = document.getElementById("check-in");
+    signInBtn = document.getElementById("sign-in");
+    checkInButton.addEventListener("click", () => {
+        checkIn();
+    });
+    signInBtn.addEventListener("click",
+        () => {
+            singIn();
+        }
+    )
 
+}
 
+function singIn() {
+    usersBlock.style.display = "none";
+    messagesBlock.style.display = "none";
+    chatInput.style.display = "none";
+    document.forms[0].style.display = "flex";
+    document.forms[1].style.display = "none";
+    main.classList.add("main-form")
+
+}
+
+function checkIn() {
+    usersBlock.style.display = "none";
+    messagesBlock.style.display = "none";
+    chatInput.style.display = "none";
+    document.forms[1].style.display = "flex";
+    document.forms[0].style.display = "none";
+    main.classList.add("main-form");
+}
 
