@@ -3,7 +3,10 @@ class MessagesView {
         this.containerId = containerId;
     }
 
-    display(msgs, user) {
+    display(msgs, user,personal=false) {
+        if(!personal){
+            msgs = msgs.filter(i=>i.isPersonal===false);
+        }
         const messagesList = document.getElementById(this.containerId);
         const messageListFragment = document.createDocumentFragment();
         function createMessage(msg) {
@@ -14,8 +17,9 @@ class MessagesView {
             const text = document.createElement("div");
             const messageFragment = document.createDocumentFragment();
             userImg.innerText = userLogo.createUserIconText(msg.author);
-            time.innerText = `${msg.createdAt.getHours()}:${msg.createdAt.getMinutes() > 9 ? msg.createdAt.getMinutes() : "0" + msg.createdAt.getMinutes()} 
-            ${msg.createdAt.getDate()} ${monthArray[msg.createdAt.getMonth()]}`;
+            const date = new Date(Date.parse(msg.createdAt));
+            time.innerText = `${date.getHours()}:${date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes()} 
+            ${date.getDate()} ${monthArray[date.getMonth()]}`;
             text.innerText = msg.text;
             userImg.classList.add("user-img", userLogo.createUserIconColor(msg.author));
             if (user === msg.author) {

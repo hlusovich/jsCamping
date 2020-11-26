@@ -1,6 +1,6 @@
 class UserList {
     constructor(users, activeUsers) {
-        this._users = users;
+        this._users =JSON.parse(sessionStorage.getItem('users') ?? '[]');
         this._activeUsers = activeUsers;
     }
 
@@ -26,8 +26,8 @@ class UserList {
      * @returns {boolean} - if it is a new user adds it to the list of users.
      */
     appendUser(user) {
-        if (!this.users().find(item => item === user)) {
-            this.users().push(user);
+        if (!this.users.find(item => item === user)) {
+            this.users.push(user);
             return true;
         }
         return false;
