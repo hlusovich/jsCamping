@@ -156,17 +156,17 @@ if (!sessionStorage.getItem('messages')) {
 }
 const activeUsers = ["Js Camping", "Яна Ярошевич", 'Виктор Виннцкий', "Илон Маск", "Марк Цукенберг", "Роберт Родригез",
 ];
+const userLogo = new UserLogos();
+userLogo.createUserIconColor("Js Camping");
 const controller = new Controller();
-controller.showMessages();
-controller.showMessages();
-controller.showMessages();
+controller.showMessages(0,20);
 controller.showAllUsers();
 let allUsers = true;
 let id = null;
 let editFlag = null;
 let mouseClickEvent = new Event("click");
 let isPrivate = false;
-let personTo = null;
+let personTo = false;
 const addMessageButton = document.getElementById("add-msg-btn");
 const messageList = document.getElementById("messages-list");
 const messageInput = document.getElementById("message-input");
@@ -192,6 +192,60 @@ controller.setCurrentUser("Клусович Никита", messageInput, message
 let signInBtn = document.getElementById("sign-in");
 let exitBtn = document.getElementById("exit-btn");
 let checkInButton = document.getElementById("check-in");
+
+function checkOutFunction() {
+    if (checkInButton) {
+        signInBtn.removeEventListener("click", singIn);
+        checkInButton.removeEventListener("click", checkIn);
+    }
+    controller.removeUser(undefined, messageInput, messageBtn, messageList);
+    checkInButton = document.getElementById("check-in");
+    signInBtn = document.getElementById("sign-in");
+    checkInButton.addEventListener("click", () => {
+        checkIn();
+    });
+    signInBtn.addEventListener("click",
+        () => {
+            singIn();
+        }
+    )
+
+}
+
+function singIn() {
+    usersBlock.style.display = "none";
+    messagesBlock.style.display = "none";
+    chatInput.style.display = "none";
+    document.forms[0].style.display = "flex";
+    document.forms[1].style.display = "none";
+    main.classList.add("main-form")
+
+}
+
+function checkIn() {
+    usersBlock.style.display = "none";
+    messagesBlock.style.display = "none";
+    chatInput.style.display = "none";
+    document.forms[1].style.display = "flex";
+    document.forms[0].style.display = "none";
+    main.classList.add("main-form");
+}
+
+function changeFilterButtonsState(e = false) {
+    if (e && e.target.value.length) {
+        filterBtnSubmit.disabled = false;
+        filterBtnCancel.disabled = false;
+        filterBtnSubmit.classList.remove("button-disabled");
+        filterBtnCancel.classList.remove("button-disabled");
+    } else {
+        filterBtnSubmit.disabled = true;
+        filterBtnCancel.disabled = true;
+        filterBtnSubmit.classList.add("button-disabled");
+        filterBtnCancel.classList.add("button-disabled");
+    }
+
+}
+
 addMessageButton.addEventListener("click", () => {
     controller.showMessages();
 });
@@ -209,16 +263,14 @@ messageList.addEventListener("click", (e) => {
 messageBtn.addEventListener("click", () => {
     if (messageInput.value) {
         if (editFlag) {
-            controller.editMessage(id, {text: messageInput.value,isPersonal:personTo,to:isPrivate});
+            controller.editMessage(id, {text: messageInput.value, isPersonal: personTo, to: isPrivate});
             id = null;
             messageInput.value = "";
             editFlag = false;
-        }
-        else if(isPrivate){
-            controller.addMessage({text:messageInput.value, isPersonal:personTo, to:isPrivate},messageList);
+        } else if (isPrivate) {
+            controller.addMessage({text: messageInput.value, isPersonal: personTo, to: isPrivate}, messageList);
             messageInput.value = "";
-        }
-        else {
+        } else {
             controller.addMessage({text: messageInput.value});
             messageInput.value = "";
         }
@@ -281,20 +333,6 @@ filterBtnCancel.addEventListener("click", () => {
 
 });
 
-function changeFilterButtonsState(e = false) {
-    if (e && e.target.value.length) {
-        filterBtnSubmit.disabled = false;
-        filterBtnCancel.disabled = false;
-        filterBtnSubmit.classList.remove("button-disabled");
-        filterBtnCancel.classList.remove("button-disabled");
-    } else {
-        filterBtnSubmit.disabled = true;
-        filterBtnCancel.disabled = true;
-        filterBtnSubmit.classList.add("button-disabled");
-        filterBtnCancel.classList.add("button-disabled");
-    }
-
-}
 
 exitBtn.addEventListener("click", () => {
     checkOutFunction();
@@ -326,7 +364,7 @@ formBtn.addEventListener("click", (event) => {
         checkOutFunction();
     })
 });
-signInFormBtn.addEventListener("click",(e)=>{
+signInFormBtn.addEventListener("click", (e) => {
     e.preventDefault();
     controller.addUser(document.forms[1].name.value);
     exitBtn.removeEventListener("click", checkOutFunction);
@@ -342,54 +380,21 @@ signInFormBtn.addEventListener("click",(e)=>{
         checkOutFunction();
     })
 });
-userList.addEventListener("click",(e)=>{
-    if(e.target.classList[0]==="user-img"){
-        controller.getPrivateMessages(e.target.nextSibling.innerText,messageList);
+userList.addEventListener("click", (e) => {
+    const userName = e.target.nextSibling.innerText;
+    const userLogoInner = userLogo.createUserIconText(e.target.nextSibling.innerText);
+    const userLogoColor = userLogo.createUserIconColor(e.target.nextSibling.innerText)
+    if (e.target.classList[0] === "user-img") {
+        controller.getPrivateMessages(e.target.nextSibling.innerText, messageList);
+        controller.createChatHeaderLogo(userName, userLogoInner, userLogoColor);
     }
-    if(e.target.nextSibling.innerText==="Js Camping"){
+    if (userName === "Js Camping") {
         isPrivate = false;
         personTo = null;
-    }
-    else{
-        isPrivate = e.target.nextSibling.innerText ;
+    } else {
+        isPrivate = userName;
         personTo = true;
     }
 });
-function checkOutFunction() {
-    if (checkInButton) {
-        signInBtn.removeEventListener("click", singIn);
-        checkInButton.removeEventListener("click", checkIn);
-    }
-    controller.removeUser(undefined, messageInput, messageBtn, messageList);
-    checkInButton = document.getElementById("check-in");
-    signInBtn = document.getElementById("sign-in");
-    checkInButton.addEventListener("click", () => {
-        checkIn();
-    });
-    signInBtn.addEventListener("click",
-        () => {
-            singIn();
-        }
-    )
 
-}
-
-function singIn() {
-    usersBlock.style.display = "none";
-    messagesBlock.style.display = "none";
-    chatInput.style.display = "none";
-    document.forms[0].style.display = "flex";
-    document.forms[1].style.display = "none";
-    main.classList.add("main-form")
-
-}
-
-function checkIn() {
-    usersBlock.style.display = "none";
-    messagesBlock.style.display = "none";
-    chatInput.style.display = "none";
-    document.forms[1].style.display = "flex";
-    document.forms[0].style.display = "none";
-    main.classList.add("main-form");
-}
 
