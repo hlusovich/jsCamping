@@ -7,9 +7,11 @@ class Controller {
         this.userList = new UserList(users, activeUsers);
         this.mainTemplateView = new MainTemplateView("mainPage-template");
         this.mainTemplateView.display();
+        this.chatHeaderView = new ChatHeaderView("chat-header");
         this.headerView.display();
         this.messageList = document.getElementById("messages-list");
         this.messageCount = 0;
+        this.chatHeaderView.display("Js Camping", "JC", userLogo.getColor("Js Camping"));
     }
 
     setCurrentUser(user, input, button, messageList) {
@@ -36,7 +38,7 @@ class Controller {
         }
     }
 
-    addMessage({text, isPersonal = false, to},messageList=[]) {
+    addMessage({text, isPersonal = false, to}, messageList = []) {
         if (this.model.add({text, isPersonal, to})) {
             const messagesList = document.getElementById("messages-list");
             messagesList.innerHTML = "";
@@ -46,9 +48,9 @@ class Controller {
                     if ((item.author === this.model.user && item.to === name) || (item.author === name && item.to === this.model.user)) {
                         return true;
                     }
-                }
-                this.messagesView.display(this.model.getPage(0, this.messageCount).filter(i=>isPrivate(i)), this.model.user);
-                this.getPrivateMessages(to,messageList);
+                };
+                this.messagesView.display(this.model.getPage(0, this.messageCount).filter(i => isPrivate(i)), this.model.user);
+                this.getPrivateMessages(to, messageList);
             } else {
                 this.messagesView.display(this.model.getPage(0, this.messageCount), this.model.user)
 
@@ -62,7 +64,17 @@ class Controller {
         if (this.model.edit(id, {text, isPersonal, to})) {
             const messagesList = document.getElementById("messages-list");
             messagesList.innerHTML = "";
-            this.messagesView.display(this.model.getPage(0, this.messageCount), this.model.user);
+            if (isPersonal) {
+                const isPrivate = (item) => {
+                    if ((item.author === this.model.user && item.to === name) || (item.author === name && item.to === this.model.user)) {
+                        return true;
+                    }
+                };
+                this.messagesView.display(this.model.getPage(0, this.messageCount).filter((i => isPrivate(i))), this.model.user);
+                this.getPrivateMessages(to, messageList);
+            } else {
+                this.messagesView.display(this.model.getPage(0, this.messageCount), this.model.user);
+            }
         }
     }
 
@@ -110,8 +122,8 @@ class Controller {
 
     getPrivateMessages(name, messageList) {
         if (name === "Js Camping") {
-            messageList.innerHTML="";
-            this.showMessages(0,this.messageCount);
+            messageList.innerHTML = "";
+            this.showMessages(0, this.messageCount);
         } else {
             const isPrivate = (item) => {
                 if ((item.author === this.model.user && item.to === name) || (item.author === name && item.to === this.model.user)) {
@@ -119,9 +131,12 @@ class Controller {
                 }
             };
             messageList.innerHTML = "";
-            this.messagesView.display(this.model.messages.filter(i => isPrivate(i)), this.model.user,true);
+            this.messagesView.display(this.model.messages.filter(i => isPrivate(i)), this.model.user, true);
         }
 
+    }
 
+    createChatHeaderLogo(user, userInner, color) {
+        this.chatHeaderView.display(user, userInner, color);
     }
 }

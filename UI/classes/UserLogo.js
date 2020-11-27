@@ -27,7 +27,8 @@ class UserLogos {
         const iconText = user.split(" ");
         return iconText[0][0] + iconText[1][0];
     }
+    getColor(user){
+        return this.colorMap[user];
+    }
 
 }
-
-const userLogo = new UserLogos();
