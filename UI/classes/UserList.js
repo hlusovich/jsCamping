@@ -32,4 +32,11 @@ class UserList {
         }
         return false;
     }
+    getUser(user){
+        if(this.users.find(item=>item===user)){
+            this.users.push(user);
+            return true;
+        }
+        return  false;
+    }
 }

@@ -1,3 +1,4 @@
+/*eslint-disable no-unused-vars*/
 class HeaderView {
     constructor(containerId) {
         this.containerId = containerId;
