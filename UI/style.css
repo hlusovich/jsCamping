@@ -272,6 +272,14 @@
     display: flex;
     align-items: center;
     margin-bottom: 10%;
+    width: 30rem;
+    padding: 0.5rem;
+    transition: background-color 0.5s linear;
+    border-radius: 3px;
+}
+.user_current{
+    background: whitesmoke;
+    opacity: 0.9;
 }
 
 .user__name {
@@ -579,6 +587,7 @@
     font-size: var(--icon-font-size);
     min-width: var(--icon-height-weight-size);
     min-height: var(--icon-height-weight-size);
+    cursor: pointer;
 }
 
 .yellow {

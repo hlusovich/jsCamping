@@ -1,9 +1,15 @@
+/* eslint-disable no-unused-vars */
 class MessageList {
     static filterObj = {
         author: (item, author) => !author || item.author.toLowerCase().includes(author.toLowerCase()),
         text: (item, text) => !text || item.text.toLowerCase().includes(text.toLowerCase()),
         dateTo: (item, dateTo) => !dateTo || item.createdAt < dateTo,
         dateFrom: (item, dateFrom) => !dateFrom || item.createdAt > dateFrom,
+    };
+    static getPrivate = (item, currentUser, checkedUsesName) => {
+        if ((item.author === currentUser && item.to === checkedUsesName) || (item.author === checkedUsesName && item.to === currentUser)) {
+            return true;
+        }
     };
 
     /**
@@ -33,15 +39,14 @@ class MessageList {
                 return false;
             },
         };
-        console.log(message)
         return Object.keys(validateObj).every((name) => validateObj[name](message));
     }
 
     constructor() {
-        this._msgs = JSON.parse(sessionStorage.getItem('messages') ?? '[]').map(i => {
-            i.createdAt = new Date(Date.parse(i.createdAt));
+        this._msgs = JSON.parse(sessionStorage.getItem('messages') ?? '[]')
+            .map(i => {i.createdAt = new Date(Date.parse(i.createdAt));
             return i;
-        });
+        }).map(item=>new Message(item,item.author));
         this._user = null;
     }
 
@@ -78,16 +83,24 @@ class MessageList {
      *      {string} text - msg text
      * @returns {Array} of Message objects
      */
-    getPage(skip = 0, top = 10, filterConfig = {}) {
+    getPage(skip = 0, top = 10, filterConfig = {}, personalMessages, currentUser, checkedUsesName) {
+        console.dir(filterConfig)
         const filterNames = Object.keys(filterConfig);
         const visibleMessages = this._msgs
             .filter((item) => filterNames
                 .every((name) => MessageList.filterObj[name](item, filterConfig[name])));
-        return visibleMessages
-            .filter((item) => !item.isPersonal || (item.author === this._user || item.to === this._user))
-            .sort((a, b) => b.createdAt - a.createdAt)
-            .slice(skip, top + skip)
-            .reverse();
+        if (personalMessages) {
+            return visibleMessages.filter((item) => MessageList.getPrivate(item, currentUser, checkedUsesName))
+                .sort((a, b) => b.createdAt - a.createdAt)
+                .slice(skip, top + skip)
+                .reverse();
+        } else {
+            return visibleMessages
+                .filter((item) => !item.isPersonal || (item.author === this._user && item.isPersonal === false))
+                .sort((a, b) => b.createdAt - a.createdAt)
+                .slice(skip, top + skip)
+                .reverse();
+        }
     }
 
     /**
