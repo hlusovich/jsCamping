@@ -2,34 +2,7 @@ const userLogo = new UserLogos();
 userLogo.createUserIconColor('Js Camping');
 const controller = new Controller();
 controller.showAllUsers();
-let allUsers = true;
-let id = null;
-let editFlag = null;
-const mouseClickEvent = new Event('click');
-let isPrivate = false;
-let personTo = false;
-const addMessageButton = document.getElementById('add-msg-btn');
-const messageList = document.getElementById('messages-list');
-const messageInput = document.getElementById('message-input');
-const messageBtn = document.getElementById('message-btn');
-const allUsersList = document.querySelector('.users-types__all');
-const activeUsersList = document.querySelector('.users-types__onlain');
-const userSearch = document.getElementById('user-search');
-const filterAuthor = document.getElementById('filter-author');
-const filterText = document.getElementById('filter-text');
-const filterDateFrom = document.getElementById('filter-from');
-const filterDateTo = document.getElementById('filter-to');
-const filterBtnSubmit = document.getElementById('filter__btn-submit');
-const filterBtnCancel = document.getElementById('filter__btn-cancel');
-const signInFormBtn = document.getElementById('form-btn');
-const usersBlock = document.getElementById('users-block');
-const messagesBlock = document.getElementById('messages');
-const main = document.getElementById('main');
-const chatInput = document.getElementById('chat-input');
-const headerLogo = document.getElementById('header-logo');
-const checkInBtn = document.getElementById('sign-in-btn');
-const userList = document.getElementById('users-list');
-controller.setCurrentUser('Клусович Никита', messageInput, messageBtn);
-let signInBtn = document.getElementById('sign-in');
-let exitBtn = document.getElementById('exit-btn');
-let checkInButton = document.getElementById('check-in');
+controller.start();
+
+
+

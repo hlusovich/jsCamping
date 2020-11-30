@@ -1,7 +1,8 @@
 class UserList {
-    constructor(users, activeUsers) {
-        this._users =JSON.parse(sessionStorage.getItem('users') ?? '[]');
+    constructor(activeUsers) {
+        this._users = [];
         this._activeUsers = activeUsers;
+        this.restore();
     }
 
     get users() {
@@ -28,15 +29,25 @@ class UserList {
     appendUser(user) {
         if (!this.users.find(item => item === user)) {
             this.users.push(user);
+            this.save(user);
             return true;
         }
         return false;
     }
-    getUser(user){
-        if(this.users.find(item=>item===user)){
-            this.users.push(user);
+
+    getUser(user) {
+        if (this.users.find(item => item === user)) {
             return true;
         }
-        return  false;
+        return false;
+    }
+
+    restore() {
+        this._users = JSON.parse(sessionStorage.getItem('users') ?? '[]');
+    }
+
+    save(user) {
+        const parseUsers = JSON.parse(sessionStorage.getItem('users'));
+        sessionStorage.setItem('users', JSON.stringify([...parseUsers, user]));
     }
 }
