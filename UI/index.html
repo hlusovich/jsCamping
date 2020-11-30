@@ -81,8 +81,8 @@
     </section>
     <section id="chat-input" class="chat-input ">
         <div>
-            <input id="message-input" class="message-input_disabled" type="text"
-                   placeholder="Только зарегистрированный пользователь может писать сообщения..." disabled/>
+            <input id="message-input" class="message-input_disabled" type="text" maxlength="200"
+                   placeholder="Только авторизованный пользователь может писать сообщения..." disabled/>
             <button id="message-btn"
                     class="chat-messages-button orange chat-button_active chat-messages-button_hide">
                 <img src="assets/images/mdi_send.png" alt="add-message-button">
@@ -134,5 +134,4 @@
 <script src="classes/UserListView.js"></script>
 <script src="classes/Controller.js"></script>
 <script src="classes/globalFunctions.js"></script>
-<script src="classes/Listeners.js"></script>
 </html>

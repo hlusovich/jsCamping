@@ -43,11 +43,9 @@ class MessageList {
     }
 
     constructor() {
-        this._msgs = JSON.parse(sessionStorage.getItem('messages') ?? '[]')
-            .map(i => {i.createdAt = new Date(Date.parse(i.createdAt));
-            return i;
-        }).map(item=>new Message(item,item.author));
+        this._msgs = [];
         this._user = null;
+        this.restore();
     }
 
     get messages() {
@@ -84,7 +82,6 @@ class MessageList {
      * @returns {Array} of Message objects
      */
     getPage(skip = 0, top = 10, filterConfig = {}, personalMessages, currentUser, checkedUsesName) {
-        console.dir(filterConfig)
         const filterNames = Object.keys(filterConfig);
         const visibleMessages = this._msgs
             .filter((item) => filterNames
@@ -193,11 +190,7 @@ class MessageList {
         newMessage.prototype = Message.prototype;
         if (MessageList.validate(newMessage)) {
             this._msgs = this._msgs.map((item) => (item.id === id ? newMessage : item));
-            const messages = JSON.parse(sessionStorage.getItem('messages') ?? '[]').map(i => {
-                i.createdAt = new Date(Date.parse(i.createdAt));
-                return i;
-            });
-            sessionStorage.setItem("messages", JSON.stringify(this._msgs));
+           this.save();
             return true;
         }
 
@@ -224,5 +217,14 @@ class MessageList {
      */
     clear() {
         this._msgs = [];
+    }
+    restore(){
+        this._msgs =JSON.parse(sessionStorage.getItem('messages') ?? '[]')
+            .map(i => {i.createdAt = new Date(Date.parse(i.createdAt));
+                return i;
+            }).map(item=>new Message(item,item.author));
+    }
+    save(){
+        sessionStorage.setItem("messages", JSON.stringify(this._msgs));
     }
 }
