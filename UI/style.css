@@ -61,15 +61,18 @@
     margin-left: 8%;
     cursor: pointer;
 }
-.main-form{
+
+.main-form {
     display: flex;
     flex-flow: column;
     height: 100vh;
 }
+
 .header__logo img {
     width: 5rem;
 }
-.form{
+
+.form {
     display: none;
     align-items: center;
     justify-content: space-between;
@@ -81,26 +84,43 @@
     margin: 0 auto;
     margin-top: 5rem;
 }
-.form__button{
+
+.form-notification {
+    opacity: 0;
+    color: #f2302a;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.form__button {
     width: 22.0rem;
-    height: 5.0rem;
+    min-height: 5.0rem;
     background: var(--chat-color-orange);
     color: #F6F6F6;
-    font-size: calc(var(--chat-text-font-size)*1.5);
-    margin-bottom: 10rem;
+    font-size: calc(var(--chat-text-font-size) * 1.5);
+    margin: 5rem;
+    cursor: pointer;
+
 }
-.form-header{
+.form__button_disabled{
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.form-header {
     width: 40rem;
-    height: 10rem;
+    min-height: 10rem;
     background: var(--chat-color-purple);
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-bottom: 5rem;
 }
-.form__logo img{
+
+.form__logo img {
     width: 5rem;
 }
-.form__logo{
+
+.form__logo {
     width: 6.4rem;
     height: 6.4rem;
     border-radius: 4px;
@@ -109,7 +129,8 @@
     align-items: center;
     justify-content: center;
 }
-.form-input{
+
+.form-input {
     font-size: 2rem;
     width: 35rem;
     height: 5rem;
@@ -210,7 +231,7 @@
     width: 100%;
     background: var(--chat-color-purple);
     height: 11.1vh;
-    bottom:0;
+    bottom: 0;
     position: absolute;
     bottom: 0;
 }
@@ -245,13 +266,15 @@
     align-items: center;
 
 }
-.users-types span{
-    font-size: calc(var(--chat-text-font-size) );
+
+.users-types span {
+    font-size: calc(var(--chat-text-font-size));
     margin-left: 20%;
     margin-bottom: 10%;
     cursor: pointer;
 }
-.users-active{
+
+.users-active {
     border-bottom: 1px solid grey;
 }
 
@@ -277,7 +300,8 @@
     transition: background-color 0.5s linear;
     border-radius: 3px;
 }
-.user_current{
+
+.user_current {
     background: whitesmoke;
     opacity: 0.9;
 }
@@ -327,12 +351,15 @@
     align-items: center;
     justify-content: center;
 }
-.chat-messages-button_hide{
+
+.chat-messages-button_hide {
     display: none;
 }
-.message-input_disabled{
+
+.message-input_disabled {
     cursor: not-allowed;
 }
+
 .chat-messages-button img {
     width: 80%;
 }

@@ -76,7 +76,6 @@
                                                                                 alt="add-message-button"></button>
         </div>
         <div id="messages-list" class="messages-list">
-
         </div>
     </section>
     <section id="chat-input" class="chat-input ">
@@ -93,18 +92,23 @@
         <div class="form-header">
             <div class="form__logo"><img src="assets/images/апельсинка%20без%20фона.png" alt="logo"/></div>
         </div>
+        <span class="form-notification" id="notification-sign-in-name"> Имя должно состоять из двух слов</span>
         <input class="form-input" name="name" type="text" placeholder="login">
-        <input class="form-input" type="password" placeholder="password">
-        <button id="form-btn" class="form__button">Войти</button>
+        <span class="form-notification" id="notification-sign-in-password"> Пароль должен быть длиннее 5 символов</span>
+        <input class="form-input" name="password" type="password" placeholder="password">
+        <button id="sign-in-form-btn" class="form__button form__button_disabled" disabled>Войти</button>
     </form>
     <form class="form">
         <div class="form-header">
             <div class="form__logo"><img src="assets/images/апельсинка%20без%20фона.png" alt="logo"/></div>
         </div>
+        <span class="form-notification" id="notification-check-in-name"> Имя должно состоять из двух слов</span>
         <input class="form-input" name="name" type="text" placeholder="login">
-        <input class="form-input" type="password" placeholder="password">
-        <input class="form-input" type="password" placeholder="password">
-        <button id="sign-in-btn" class="form__button">Регистрация</button>
+        <span class="form-notification" id="notification-check-in-password"> Пароль должен быть длиннее 5 символов</span>
+        <input class="form-input" name="password" type="password" placeholder="password">
+        <input class="form-input" name="passwordAgain" type="password" placeholder="password">
+        <span class="form-notification" id="notification-check-in-passwords-is-same"> Пароли должны быть одинаковые</span>
+        <button id="check-in-form-btn" class="form__button form__button_disabled" disabled>Регистрация</button>
     </form>
     <footer class="footer">
         <div>

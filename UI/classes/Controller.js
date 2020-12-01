@@ -1,16 +1,18 @@
 /* eslint-disable no-unused-vars */
 class Controller {
     constructor() {
+        this.userLogo = new UserLogos();
+        this.userLogo.createUserIconColor('Js Camping');
         this.model = new MessageList();
-        this.headerView = new HeaderView('profile');
-        this.messagesView = new MessagesView('messages-list');
-        this.UsersView = new UsersListView('users-list');
+        this.headerView = new HeaderView('profile', this.userLogo);
+        this.messagesView = new MessagesView('messages-list', this.userLogo);
+        this.UsersView = new UsersListView('users-list', this.userLogo);
         this.userListModel = new UserList(activeUsers);
         this.chatHeaderView = new ChatHeaderView('chat-header');
         this.headerView.display();
         this.messageList = document.getElementById('messages-list');
         this.messageCount = 10;
-        this.chatHeaderView.display('Js Camping', 'JC', userLogo.getColor('Js Camping'));
+        this.chatHeaderView.display('Js Camping', 'JC', this.userLogo.getColor('Js Camping'));
         this.checkedUserChat = 'Js Camping';
         this.userSearch = document.getElementById('user-search');
         this.allUsersListState = true;
@@ -34,8 +36,17 @@ class Controller {
         this.filterBtnSubmit = document.getElementById('filter__btn-submit');
         this.filterBtnCancel = document.getElementById('filter__btn-cancel');
         this.userList = document.getElementById('users-list');
+        this.notificationCheckInName = document.getElementById("notification-check-in-name");
+        this.notificationCheckInPassword = document.getElementById("notification-check-in-password");
+        this.notificationCheckInPasswordsIsSame = document.getElementById("notification-check-in-passwords-is-same");
+        this.notificationSignInName = document.getElementById("notification-sign-in-name");
+        this.notificationSignInPassword = document.getElementById("notification-sign-in-password");
+        this.signInFormButton = document.getElementById("sign-in-form-btn");
+        this.checkInFormButton = document.getElementById("check-in-form-btn");
     }
-    start(){
+
+    start() {
+        this.showAllUsers();
         this.id = null;
         this.editFlag = false;
         this.to = "";
@@ -63,26 +74,59 @@ class Controller {
         this.headerLogo.addEventListener("click", () => {
             this.showMainPage();
         });
+        document.forms[1].name.addEventListener("change", () => {
+                this.validateName(document.forms[1].name.value, this.notificationCheckInName);
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+            }
+        );
+        document.forms[1].password.addEventListener("change", () => {
+                this.validatePassword(document.forms[1].password.value, this.notificationCheckInPassword);
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+                if(document.forms[1].passwordAgain.value){
+                    this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+                }
+            }
+        );
+        document.forms[1].passwordAgain.addEventListener("change", () => {
+                this.validatePassword(document.forms[1].passwordAgain.value, this.notificationCheckInPassword);
+                this.isPasswordsSame(document.forms[1].password.value, document.forms[1].passwordAgain.value, this.notificationCheckInPasswordsIsSame);
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+            }
+        );
         document.forms[1].addEventListener("submit", (event) => {
             event.preventDefault();
-            if (this.addUser(document.forms[1].name.value)) {
-                this.setCurrentUser(document.forms[1].name.value);
+            if (this.addUser(document.forms[1].name.value.trim())) {
+                this.setCurrentUser(document.forms[1].name.value.trim());
                 this.showMainPage();
                 this.allUsersListState = true;
                 this.chooseUsersList();
                 this.showAllUsers();
+                document.forms[1].name.value = "";
+                this.toggleDisabledFormButton(this.checkInFormButton);
             } else {
                 alert("такой пользователь уже зарегистрирован");
             }
         });
+        document.forms[0].name.addEventListener("change", () => {
+                this.validateName(document.forms[0].name.value, this.notificationSignInName);
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].password.addEventListener("change", () => {
+                this.validatePassword(document.forms[0].password.value, this.notificationSignInPassword);
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
         document.forms[0].addEventListener("submit", (e) => {
             e.preventDefault();
-            if (this.getUser(document.forms[0].name.value)) {
-                this.setCurrentUser(document.forms[0].name.value);
+            if (this.getUser(document.forms[0].name.value.trim())) {
+                this.setCurrentUser(document.forms[0].name.value.trim());
                 this.showMainPage();
                 this.allUsersListState = true;
                 this.chooseUsersList();
                 this.showAllUsers();
+                document.forms[0].name.value = "";
+                this.toggleDisabledFormButton(this.signInFormButton);
             } else {
                 alert("такой пользователь еще не зарегистрирован");
             }
@@ -166,8 +210,8 @@ class Controller {
         this.userList.addEventListener("click", (e) => {
             if (e.target.classList[0] === "user-img" || e.target.classList[0] === "user_name") {
                 const userName = e.target.classList[0] === "user-img" ? e.target.nextSibling.innerText : e.target.innerText;
-                const userLogoInner = userLogo.createUserIconText(userName);
-                const userLogoColor = userLogo.createUserIconColor(userName);
+                const userLogoInner = this.userLogo.createUserIconText(userName);
+                const userLogoColor = this.userLogo.createUserIconColor(userName);
                 this.setChechedUserChat(userName);
                 this.showMessages();
                 this.createChatHeaderLogo(userName, userLogoInner, userLogoColor);
@@ -361,4 +405,59 @@ class Controller {
         });
         this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel);
     }
+
+    validateName(value, notification = false) {
+        if (value.trim().split(" ").length === 2) {
+            if (notification) {
+                notification.style.opacity = 0;
+            }
+            return true;
+        }
+        if (notification) {
+            notification.style.opacity = 1;
+        }
+        return false;
+
+    }
+
+    validatePassword(value, notification = false) {
+        if (value.trim().length > 5) {
+            if (notification) {
+                notification.style.opacity = 0;
+            }
+            return true;
+        }
+        if (notification) {
+            notification.style.opacity = 1;
+        }
+        return false;
+    }
+
+    isPasswordsSame(password, passwordAgain, notification = false) {
+        if (password === passwordAgain) {
+            if (notification) {
+                notification.style.opacity = 0;
+            }
+            return true;
+        }
+        if (notification) {
+            notification.style.opacity = 1;
+        }
+        return false;
+    }
+
+    toggleDisabledFormButton(button, name, password, passwordAgain = password) {
+        if (name && this.validateName(name) && password && this.validatePassword(password) && passwordAgain && this.validatePassword(passwordAgain) && this.isPasswordsSame(password, passwordAgain)) {
+            button.classList.remove("form__button_disabled");
+            button.disabled = false;
+            console.dir(button)
+            return true;
+
+        }
+        button.classList.add("form__button_disabled");
+        button.disabled = true;
+        return false;
+
+    }
+
 }
