@@ -102,10 +102,12 @@
     cursor: pointer;
 
 }
-.form__button_disabled{
+
+.form__button_disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
+
 .form-header {
     width: 40rem;
     min-height: 10rem;
@@ -615,6 +617,70 @@
     min-width: var(--icon-height-weight-size);
     min-height: var(--icon-height-weight-size);
     cursor: pointer;
+}
+
+.notification {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 55rem;
+    height: 15rem;
+    transition: opacity;
+    animation: show-notification ease-out 5s;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    background: snow;
+    animation-delay: 1s;
+    padding: 0 2%;
+    border-radius: 3px;
+}
+
+.notification div > i {
+    font-size: 5rem;
+}
+
+.notification div {
+    font-size: 1.7rem;
+}
+
+.notification-success {
+    color: #4ad295;
+    background: rgb(74, 210, 149, 0.3);
+    border: 1px rgb(74, 210, 149, 0.1) inset;
+}
+
+.notification-success div i {
+    color: #4ad295;;
+}
+.notification-success div  {
+    color: #4ad295;
+    margin-left: 5rem;
+    }
+
+.notification-error {
+    color: #f2230c;
+    border: 1px rgb(242, 78, 88, 0.3) inset;
+    background: rgb(242, 78, 88, 0.1);
+}
+
+.notification-error div i {
+    color: #f2302a;
+}
+.notification-error div {
+    color: #f2302a;
+}
+
+@keyframes show-notification {
+    0% {
+        opacity: 1;
+    }
+    25% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 .yellow {

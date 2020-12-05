@@ -1,7 +1,7 @@
 class UserList {
     constructor(activeUsers) {
         this._users = [];
-        this._activeUsers = activeUsers;
+        this._activeUsers = [];
         this.restore();
     }
 
@@ -10,7 +10,8 @@ class UserList {
     }
 
     set users(value) {
-        return;
+        this._activeUsers = value.filter(item => item.isActive);
+        return this._users = value;
     }
 
     get activeUsers() {

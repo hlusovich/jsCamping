@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
 class Controller {
     constructor() {
+        this.chatApiService = new ChatApiService("https://jslabdb.datamola.com/")
         this.userLogo = new UserLogos();
+        this.notification = new Notification();
         this.userLogo.createUserIconColor('Js Camping');
         this.model = new MessageList();
         this.headerView = new HeaderView('profile', this.userLogo);
         this.messagesView = new MessagesView('messages-list', this.userLogo);
         this.UsersView = new UsersListView('users-list', this.userLogo);
-        this.userListModel = new UserList(activeUsers);
+        this.userListModel = new UserList();
         this.chatHeaderView = new ChatHeaderView('chat-header');
         this.headerView.display();
         this.messageList = document.getElementById('messages-list');
@@ -45,7 +47,8 @@ class Controller {
         this.checkInFormButton = document.getElementById("check-in-form-btn");
     }
 
-    start() {
+    async start() {
+        this.userListModel.users = await this.chatApiService.getUsers();
         this.showAllUsers();
         this.id = null;
         this.editFlag = false;
@@ -76,35 +79,58 @@ class Controller {
         });
         document.forms[1].name.addEventListener("change", () => {
                 this.validateName(document.forms[1].name.value, this.notificationCheckInName);
+            }
+        );
+        document.forms[1].name.addEventListener("input", () => {
                 this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
             }
         );
         document.forms[1].password.addEventListener("change", () => {
                 this.validatePassword(document.forms[1].password.value, this.notificationCheckInPassword);
                 this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
-                if(document.forms[1].passwordAgain.value){
-                    this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
-                }
+            }
+        );
+        document.forms[1].password.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
             }
         );
         document.forms[1].passwordAgain.addEventListener("change", () => {
                 this.validatePassword(document.forms[1].passwordAgain.value, this.notificationCheckInPassword);
                 this.isPasswordsSame(document.forms[1].password.value, document.forms[1].passwordAgain.value, this.notificationCheckInPasswordsIsSame);
+            }
+        );
+        document.forms[1].passwordAgain.addEventListener("input", () => {
                 this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
             }
         );
-        document.forms[1].addEventListener("submit", (event) => {
+        document.forms[1].addEventListener("submit", async (event) => {
             event.preventDefault();
             if (this.addUser(document.forms[1].name.value.trim())) {
-                this.setCurrentUser(document.forms[1].name.value.trim());
-                this.showMainPage();
-                this.allUsersListState = true;
-                this.chooseUsersList();
-                this.showAllUsers();
-                document.forms[1].name.value = "";
-                this.toggleDisabledFormButton(this.checkInFormButton);
+                try {
+                    await this.chatApiService.checkIn({
+                        name: document.forms[1].name.value.trim(),
+                        pass: document.forms[1].password.value,
+                    });
+                    this.setCurrentUser(localStorage.getItem("user"));
+                    this.showMainPage();
+                    this.allUsersListState = true;
+                    this.chooseUsersList();
+                    this.showAllUsers();
+                    document.forms[1].name.value = "";
+                    document.forms[1].password.value = "";
+                    document.forms[1].passwordAgain.value = "";
+                    this.toggleDisabledFormButton(this.checkInFormButton);
+                    this.makeSound("assets/sounds/вход.mp3");
+                    this.notification.showNotification({
+                        text: "поздравляю,вы успешно зарегистрировались",
+                        succesfull: true
+                    });
+                } catch (e) {
+                    alert("Ошибка регистрации")
+                }
             } else {
-                alert("такой пользователь уже зарегистрирован");
+                this.makeSound("assets/sounds/уведомление.mp3");
+                this.notification.showNotification({text: "такой пользователь уже зарегистрирован", succesfull: false});
             }
         });
         document.forms[0].name.addEventListener("change", () => {
@@ -112,23 +138,45 @@ class Controller {
                 this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
             }
         );
-        document.forms[0].password.addEventListener("change", () => {
-                this.validatePassword(document.forms[0].password.value, this.notificationSignInPassword);
+        document.forms[0].name.addEventListener("input", () => {
                 this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
             }
         );
-        document.forms[0].addEventListener("submit", (e) => {
+        document.forms[0].password.addEventListener("change", () => {
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].password.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].addEventListener("submit", async (e) => {
             e.preventDefault();
-            if (this.getUser(document.forms[0].name.value.trim())) {
-                this.setCurrentUser(document.forms[0].name.value.trim());
-                this.showMainPage();
-                this.allUsersListState = true;
-                this.chooseUsersList();
-                this.showAllUsers();
-                document.forms[0].name.value = "";
-                this.toggleDisabledFormButton(this.signInFormButton);
+            if (this.chatApiService.getUser(document.forms[0].name.value.trim())) {
+                try {
+                    await this.chatApiService.signIn({
+                        name: document.forms[1].name.value.trim(),
+                        pass: document.forms[1].password.value,
+                    });
+                    this.setCurrentUser(localStorage.getItem("user"));
+                    this.showMainPage();
+                    this.allUsersListState = true;
+                    this.chooseUsersList();
+                    this.showAllUsers();
+                    document.forms[0].name.value = "";
+                    document.forms[0].password.value = "";
+                    this.toggleDisabledFormButton(this.signInFormButton);
+                    this.makeSound("assets/sounds/вход.mp3");
+                    this.notification.showNotification({text: "вы успешно вошли", succesfull: true});
+                } catch (e) {
+                    alert("Ошибка входа")
+                }
             } else {
-                alert("такой пользователь еще не зарегистрирован");
+                this.makeSound("assets/sounds/уведомление.mp3");
+                this.notification.showNotification({
+                    text: "такой пользователь еще не зарегистрирован",
+                    succesfull: false
+                });
             }
 
         });
@@ -249,7 +297,7 @@ class Controller {
         }
     }
 
-    removeUser(user, input, button) {
+    async removeUser(user, input, button) {
         if (this.model.changeUser(null)) {
             this.headerView.display();
             this.messageInput.classList.remove('message-input_disabled');
@@ -257,68 +305,71 @@ class Controller {
             this.messageInput.disabled = true;
             this.messageBtn.classList.add('chat-messages-button_hide');
             this.messageList.innerHTML = '';
-            this.messagesView.display(this.model.getPage(0, this.messageCount), this.model.user);
+            this.showMessages();
         }
     }
 
-    addMessage({text, isPersonal = false, to}) {
-        if (this.model.add({text, isPersonal, to})) {
+    async addMessage({text, isPersonal = false, to}) {
+        if (await this.chatApiService.createMessage(text, isPersonal, to)) {
             this.messageList.innerHTML = '';
             this.messageCount += 1;
             this.showMessages();
         }
     }
 
-    editMessage({text, isPersonal = false, to}) {
-        if (this.model.edit(this.id, {text, isPersonal, to})) {
+    async editMessage({text, isPersonal = false, to}) {
+        if (await this.chatApiService.editMessage({text, isPersonal, to},this.id)) {
             this.messageList.innerHTML = '';
             this.showMessages();
         }
     }
 
-    removeMessage(id) {
-        if (this.model.remove(id)) {
+    async removeMessage(id) {
+        if (await this.chatApiService.deleteMessage(id)) {
             this.messageList.innerHTML = '';
             this.showMessages();
         }
     }
 
-    showMessages(filterConfig = {}, skip = 0, top = 10, pagination = false) {
+    async showMessages(filterConfig = {}, skip = 0, top = 10, pagination = false) {
         if (!Object.keys(filterConfig).length && pagination) {
             this.messageList.innerHTML = '';
             this.messageCount += top;
         }
         this.messageList.innerHTML = '';
         if (this.checkedUserChat === 'Js Camping') {
+            const messages = await this.chatApiService.getPage(0, this.messageCount, filterConfig);
             this.messagesView
-                .display(this.model.getPage(0, this.messageCount, filterConfig), this.model.user);
+                .display(messages.map(item => new Message(item, item.author)), this.model.user);
         } else {
-            this.messagesView.display(this.model.getPage
+            this.messagesView.display(await this.chatApiService.getPage
                 (0, this.messageCount, filterConfig, true, this.model.user, this.checkedUserChat),
                 this.model.user);
         }
     }
 
     showActiveUsers(searchString = false) {
-        if (searchString) {
-            this.UsersView.display(this.userListModel.activeUsers.filter((item) => item !== this.model.user
-                && item.toLowerCase().startsWith(searchString.toLowerCase())), this.checkedUserChat);
-        } else {
-            this.UsersView.display(this.userListModel.activeUsers.filter((item) => item !== this.model.user), this.checkedUserChat);
-        }
+        const users = this.chatApiService.activeUsers;
+        this.showUsers(users, searchString);
     }
 
     showAllUsers(searchString = false) {
+        const users = this.chatApiService.users;
+        this.showUsers(users, searchString);
+    }
+
+    showUsers(users, searchString) {
         if (searchString) {
-            this.UsersView.display(this.userListModel.users.filter((item) => item !== this.model.user
-                && item.toLowerCase().startsWith(searchString.toLowerCase())), this.checkedUserChat);
+            this.UsersView.display(users.filter((item) => item.name !== localStorage.getItem("user") &&
+                item.name.toLowerCase().startsWith(searchString.toLowerCase())), this.checkedUserChat);
         } else {
-            this.UsersView.display(this.userListModel.users.filter((item) => item !== this.model.user), this.checkedUserChat);
+            this.UsersView.display(users.filter((item) => item.name !== this.model.user), this.checkedUserChat);
         }
+
     }
 
     addUser(user) {
-        if (this.userListModel.appendUser(user)) {
+        if (this.chatApiService.appendUser(user)) {
             this.showAllUsers();
             return true;
         }
@@ -326,7 +377,7 @@ class Controller {
     }
 
     getUser(user) {
-        if (this.userListModel.getUser(user)) {
+        if (this.chatApiService.getUser(user)) {
             this.showAllUsers();
             return true;
         }
@@ -450,13 +501,19 @@ class Controller {
         if (name && this.validateName(name) && password && this.validatePassword(password) && passwordAgain && this.validatePassword(passwordAgain) && this.isPasswordsSame(password, passwordAgain)) {
             button.classList.remove("form__button_disabled");
             button.disabled = false;
-            console.dir(button)
             return true;
 
         }
         button.classList.add("form__button_disabled");
         button.disabled = true;
         return false;
+
+    }
+
+    makeSound(patch) {
+        const audio = new Audio();
+        audio.src = patch;
+        audio.autoplay = true;
 
     }
 

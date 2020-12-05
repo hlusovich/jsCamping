@@ -1,8 +1,10 @@
 const colorsList = ["red", "orange", "purple", "yellow", "red", "green", "blue", "pink"];
+
 class UserLogos {
     constructor(colorMap = {}) {
         this.colorMap = colorMap;
     }
+
     /**
      * return css class using parameter msg.
      * @param {string} user-which if present in the map is the key for the map,
@@ -25,9 +27,11 @@ class UserLogos {
      */
     createUserIconText(user) {
         const iconText = user.split(" ");
-        return iconText[0][0] + iconText[1][0];
+        const name = iconText[0][0] + (iconText[1] ? iconText[1][0] : iconText[0][1]);
+        return name;
     }
-    getColor(user){
+
+    getColor(user) {
         return this.colorMap[user];
     }
 

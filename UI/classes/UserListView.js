@@ -9,20 +9,20 @@ class UsersListView {
         const userList = document.getElementById(this.containerId);
         const fragment = document.createDocumentFragment();
         activeUsers.map(activeUser => {
-            const user = document.createElement("div");
+            if(activeUser.name){const user = document.createElement("div");
             user.classList.add("user");
-            if (activeUser === checkedUserChat) {
+            if (activeUser.name === checkedUserChat) {
                 user.classList.add("user_current");
             }
             const userIcon = document.createElement("div");
-            userIcon.classList.add("user-img", this.userLogo.createUserIconColor(activeUser));
-            userIcon.innerText = this.userLogo.createUserIconText(activeUser);
+            userIcon.classList.add("user-img", this.userLogo.createUserIconColor(activeUser.name));
+            userIcon.innerText = this.userLogo.createUserIconText(activeUser.name);
             const userName = document.createElement("div");
-            userName.innerText = activeUser;
+            userName.innerText = activeUser.name;
             userName.classList.add('user_name');
             user.appendChild(userIcon);
             user.appendChild(userName);
-            fragment.appendChild(user);
+            fragment.appendChild(user);}
         });
         userList.innerHTML = "";
         userList.appendChild(fragment);

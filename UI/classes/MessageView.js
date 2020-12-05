@@ -1,3 +1,4 @@
+const monthArray = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Cентября', 'Октября', 'Ноября', 'Декабря'];
 class MessagesView {
     constructor(containerId, userLogo) {
         this.containerId = containerId;
@@ -5,6 +6,7 @@ class MessagesView {
     }
 
     display(msgs, user) {
+        console.error(msgs);
         const messagesList = document.getElementById(this.containerId);
         const messageListFragment = document.createDocumentFragment();
 
@@ -70,7 +72,6 @@ class MessagesView {
                 alert(`неподходящий объект ${e}`);
             }
         }
-
         msgs.map((item) => createMessage(item, this.userLogo));
         messagesList.prepend(messageListFragment);
     }
