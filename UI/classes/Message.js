@@ -4,7 +4,7 @@ class Message {
     text, isPersonal = false, to = undefined, id = new Date().toString(), createdAt = new Date(),
   }, author) {
     this.author = author;
-    this.createdAt = createdAt;
+    this.createdAt = createdAt instanceof Date? createdAt : new Date(createdAt);
     this.id = id;
     this.isPersonal = isPersonal;
     this.to = to;

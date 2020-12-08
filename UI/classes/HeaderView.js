@@ -1,7 +1,8 @@
 /*eslint-disable no-unused-vars*/
 class HeaderView {
-    constructor(containerId) {
+    constructor(containerId, userLogo) {
         this.containerId = containerId;
+        this.userLogo = userLogo;
     }
 
     /**
@@ -18,8 +19,8 @@ class HeaderView {
             const profileUserIcon = document.createElement("div");
             const exitButton = document.createElement("button");
             exitButton.id = "exit-btn";
-            profileUserIcon.classList.add("user-img", userLogo.createUserIconColor(user));
-            profileUserIcon.innerText = userLogo.createUserIconText(user);
+            profileUserIcon.classList.add("user-img", this.userLogo.createUserIconColor(user));
+            profileUserIcon.innerText = this.userLogo.createUserIconText(user);
             profileUserName.innerText = user;
             exitButton.innerText = "Выход";
             exitButton.classList.add("profile__button");
