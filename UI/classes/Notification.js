@@ -17,7 +17,6 @@ class Notification {
         notification.appendChild(notificationIcon);
         notification.appendChild(notificationText);
         document.body.prepend(notification);
-
         setTimeout(() => {
             notification.remove();
         }, 5000)
