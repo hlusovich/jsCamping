@@ -2,7 +2,7 @@
 class Controller {
     constructor() {
         this.errorPage = new ErrorPageVIew();
-        this.chatApiService = new ChatApiService("https://jslabdb.datamola.com/");
+        this.chatApiService = new ChatApiService("https://jslabdb.datamola.com/", this.errorPage);
         this.userLogo = new UserLogos();
         this.notification = new Notification();
         this.userLogo.createUserIconColor('Js Camping');
@@ -56,15 +56,11 @@ class Controller {
     }
 
     async start() {
-        try {
-            this.showUsers("users");
-        } catch (e) {
-            this.errorPage.display()
-        }
+        this.setCurrentUser(localStorage.getItem("user") || null);
+        await this.showUsers("users");
         this.addMessageButton.addEventListener("click", () => {
             this.showMessages({}, 0, 10, true);
         });
-        this.setCurrentUser(localStorage.getItem("user") || null);
         this.userSearch.addEventListener("input", (e) => {
             if (this.allUsersListState) {
                 this.showUsers("users", e.target.value);
@@ -92,96 +88,8 @@ class Controller {
             this.burgerMenu.classList.toggle("mobile__burger-menu_active");
             this.profile.classList.toggle("profile-mobile_active");
         });
-        document.forms[1].name.addEventListener("change", () => {
-                this.validateName(document.forms[1].name.value, this.notificationCheckInName);
-            }
-        );
-        document.forms[1].name.addEventListener("input", () => {
-                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
-            }
-        );
-        document.forms[1].password.addEventListener("change", () => {
-                this.validatePassword(document.forms[1].password.value, this.notificationCheckInPassword);
-                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
-            }
-        );
-        document.forms[1].password.addEventListener("input", () => {
-                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
-            }
-        );
-        document.forms[1].passwordAgain.addEventListener("change", () => {
-                this.validatePassword(document.forms[1].passwordAgain.value, this.notificationCheckInPassword);
-                this.isPasswordsSame(document.forms[1].password.value, document.forms[1].passwordAgain.value, this.notificationCheckInPasswordsIsSame);
-            }
-        );
-        document.forms[1].passwordAgain.addEventListener("input", () => {
-                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
-            }
-        );
-        document.forms[1].addEventListener("submit", async (event) => {
-            event.preventDefault();
-            if (this.addUser(document.forms[1].name.value.trim())) {
-                try {
-                    const formData = new FormData();
-                    formData.append("name", document.forms[1].name.value.trim());
-                    formData.append("pass", document.forms[1].password.value);
-                    await this.chatApiService.isAuth(formData, "register");
-                    await this.chatApiService.isAuth(formData, "login");
-                    localStorage.setItem("user", document.forms[1].name.value.trim());
-                    this.toDoAfterValidation("поздравляю,вы успешно зарегистрировались");
-                    document.forms[1].name.value = "";
-                    document.forms[1].password.value = "";
-                    document.forms[1].passwordAgain.value = "";
-                } catch (e) {
-                    this.makeSound("assets/sounds/уведомление.mp3");
-                    this.notification.showNotification({text: `Ошибка регистрации +${e.message}`, succesfull: false});
-                }
-            } else {
-                this.makeSound("assets/sounds/уведомление.mp3");
-                this.notification.showNotification({text: "такой пользователь уже зарегистрирован", succesfull: false});
-            }
-        });
-        document.forms[0].name.addEventListener("change", () => {
-                this.validateName(document.forms[0].name.value, this.notificationSignInName);
-                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
-            }
-        );
-        document.forms[0].name.addEventListener("input", () => {
-                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
-            }
-        );
-        document.forms[0].password.addEventListener("change", () => {
-                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
-            }
-        );
-        document.forms[0].password.addEventListener("input", () => {
-                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
-            }
-        );
-        document.forms[0].addEventListener("submit", async (e) => {
-            e.preventDefault();
-            if (this.chatApiService.getUser(document.forms[0].name.value.trim())) {
-                try {
-                    const formData = new FormData;
-                    formData.append("name", document.forms[0].name.value.trim());
-                    formData.append("pass", document.forms[0].password.value);
-                    await this.chatApiService.isAuth(formData, "login");
-                    localStorage.setItem("user", document.forms[0].name.value.trim());
-                    this.toDoAfterValidation("вы успешно вошли");
-                    document.forms[0].name.value = "";
-                    document.forms[0].password.value = "";
-                } catch (e) {
-                    this.notification.showNotification({text: e.message, succesfull: false});
-                }
-            } else {
-                this.makeSound("assets/sounds/уведомление.mp3");
-                this.notification.showNotification({
-                    text: "такой пользователь еще не зарегистрирован",
-                    succesfull: false
-                });
-            }
-
-        });
+        this.checkInFormListeners();
+        this.signInFormListeners();
         this.header.addEventListener("click", async (e) => {
             if (e.target.id === 'exit-btn') {
                 this.removeUser();
@@ -222,40 +130,7 @@ class Controller {
                 }
             }
         });
-        this.filterText.addEventListener('input', (e) => {
-            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateFrom.value, this.filterDateTo.value, this.filterAuthor.value)) {
-                this.clearFiltersFields();
-            }
-
-        });
-        this.filterAuthor.addEventListener('input', (e) => {
-            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateFrom.value, this.filterDateTo.value, this.filterText.value)) {
-                this.clearFiltersFields();
-            }
-
-        });
-        this.filterDateFrom.addEventListener('input', (e) => {
-            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateTo.value, this.filterText.value, this.filterAuthor.value)) {
-                this.clearFiltersFields();
-            }
-
-        });
-        this.filterDateTo.addEventListener('input', (e) => {
-            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateFrom.value, this.filterText.value, this.filterAuthor.value)) {
-                this.clearFiltersFields();
-            }
-
-        });
-        this.filterBtnSubmit.addEventListener("click", () => {
-            this.showMessages({
-                author: this.filterAuthor.value, text: this.filterText.value,
-                dateTo: this.filterDateTo.value ? new Date(Date.parse(this.filterDateTo.value)) : "",
-                dateFrom: this.filterDateFrom.value ? new Date(Date.parse(this.filterDateFrom.value)) : "",
-            });
-        });
-        this.filterBtnCancel.addEventListener("click", () => {
-            this.clearFiltersFields();
-        });
+        this.addFilterAreasListeners();
         this.userList.addEventListener("click", async (e) => {
             if (e.target.classList[0] === "user-img" || e.target.classList[0] === "user_name") {
                 const userName = e.target.classList[0] === "user-img" ? e.target.nextSibling.innerText : e.target.innerText;
@@ -278,7 +153,6 @@ class Controller {
         });
         this.showMessages();
     }
-
     setChechedUserChat(name) {
         this.checkedUserChat = name;
     }
@@ -293,9 +167,16 @@ class Controller {
             this.showMessages();
         }
     }
-
+    clearFormsFIelds(){
+        document.forms[1].password.value = "";
+        document.forms[1].name.value = "";
+        document.forms[1].passwordAgain.value = "";
+        document.forms[0].password.value = "";
+        document.forms[0].name.value = "";
+    }
     async removeUser() {
         try {
+            this.clearFormsFIelds();
             this.headerView.display();
             this.messageInput.classList.remove('message-input_disabled');
             this.messageInput.placeholder = 'Только зарегистрированный пользователь может писать сообщения...';
@@ -312,7 +193,6 @@ class Controller {
         } catch (e) {
             this.errorPage.display();
         }
-
     }
 
     async addMessage({text, isPersonal = false, to}) {
@@ -563,6 +443,150 @@ class Controller {
         this.notification.showNotification({
             text: message,
             succesfull: true
+        });
+    }
+
+    async logIn(formData, user, message) {
+        const response = await this.chatApiService.isAuth(formData, "login").then(data => data.json());
+        if (response.error) {
+            throw new Error(response.error);
+        }
+        if (response.token) {
+            localStorage.setItem("token", response.token);
+        }
+        localStorage.setItem("user", user);
+        this.toDoAfterValidation(message);
+    }
+
+    addFilterAreasListeners() {
+        this.filterText.addEventListener('input', (e) => {
+            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateFrom.value, this.filterDateTo.value, this.filterAuthor.value)) {
+                this.clearFiltersFields();
+            }
+
+        });
+        this.filterAuthor.addEventListener('input', (e) => {
+            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateFrom.value, this.filterDateTo.value, this.filterText.value)) {
+                this.clearFiltersFields();
+            }
+
+        });
+        this.filterDateFrom.addEventListener('input', (e) => {
+            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateTo.value, this.filterText.value, this.filterAuthor.value)) {
+                this.clearFiltersFields();
+            }
+
+        });
+        this.filterDateTo.addEventListener('input', (e) => {
+            if (this.changeFilterButtonsState(this.filterBtnSubmit, this.filterBtnCancel, e, this.filterDateFrom.value, this.filterText.value, this.filterAuthor.value)) {
+                this.clearFiltersFields();
+            }
+
+        });
+        this.filterBtnSubmit.addEventListener("click", () => {
+            this.showMessages({
+                author: this.filterAuthor.value, text: this.filterText.value,
+                dateTo: this.filterDateTo.value ? new Date(Date.parse(this.filterDateTo.value)) : "",
+                dateFrom: this.filterDateFrom.value ? new Date(Date.parse(this.filterDateFrom.value)) : "",
+            });
+        });
+        this.filterBtnCancel.addEventListener("click", () => {
+            this.clearFiltersFields();
+        });
+    }
+
+    checkInFormListeners() {
+        document.forms[1].name.addEventListener("change", () => {
+                this.validateName(document.forms[1].name.value, this.notificationCheckInName);
+            }
+        );
+        document.forms[1].name.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+            }
+        );
+        document.forms[1].password.addEventListener("change", () => {
+                this.validatePassword(document.forms[1].password.value, this.notificationCheckInPassword);
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+            }
+        );
+        document.forms[1].password.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+            }
+        );
+        document.forms[1].passwordAgain.addEventListener("change", () => {
+                this.validatePassword(document.forms[1].passwordAgain.value, this.notificationCheckInPassword);
+                this.isPasswordsSame(document.forms[1].password.value, document.forms[1].passwordAgain.value, this.notificationCheckInPasswordsIsSame);
+            }
+        );
+        document.forms[1].passwordAgain.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.checkInFormButton, document.forms[1].name.value, document.forms[1].password.value, document.forms[1].passwordAgain.value);
+            }
+        );
+        document.forms[1].addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (this.addUser(document.forms[1].name.value.trim())) {
+                try {
+                    this.checkInFormButton.disabled = true;
+                    const formData = new FormData();
+                    formData.append("name", document.forms[1].name.value.trim());
+                    formData.append("pass", document.forms[1].password.value);
+                    await this.chatApiService.isAuth(formData, "register");
+                    await this.logIn(formData, document.forms[1].name.value.trim(), "поздравляю,вы успешно зарегистрировались");
+                } catch (e) {
+                    this.makeSound("assets/sounds/уведомление.mp3");
+                    this.notification.showNotification({text: `Ошибка регистрации +${e.message}`, succesfull: false});
+                } finally {
+                    this.checkInFormButton.disabled = false;
+                }
+            } else {
+                this.makeSound("assets/sounds/уведомление.mp3");
+                this.notification.showNotification({text: "такой пользователь уже зарегистрирован", succesfull: false});
+            }
+        });
+    }
+
+    signInFormListeners() {
+        document.forms[0].name.addEventListener("change", () => {
+                this.validateName(document.forms[0].name.value, this.notificationSignInName);
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].name.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].password.addEventListener("change", () => {
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].password.addEventListener("input", () => {
+                this.toggleDisabledFormButton(this.signInFormButton, document.forms[0].name.value, document.forms[0].password.value);
+            }
+        );
+        document.forms[0].addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (this.chatApiService.getUser(document.forms[0].name.value.trim())) {
+                try {
+                    this.signInFormButton.disabled = true;
+                    const formData = new FormData;
+                    formData.append("name", document.forms[0].name.value.trim());
+                    formData.append("pass", document.forms[0].password.value);
+                    await this.logIn(formData, document.forms[0].name.value.trim(), "вы успешно вошли");
+
+                } catch (e) {
+                    this.notification.showNotification({text: e.message, succesfull: false});
+                    this.makeSound("assets/sounds/уведомление.mp3");
+                } finally {
+                    this.signInFormButton.disabled = false;
+                }
+            } else {
+                this.makeSound("assets/sounds/уведомление.mp3");
+                this.notification.showNotification({
+                    text: "такой пользователь еще не зарегистрирован",
+                    succesfull: false
+                });
+            }
+
         });
     }
 

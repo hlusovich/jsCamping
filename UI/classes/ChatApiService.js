@@ -1,9 +1,10 @@
 class ChatApiService {
-    constructor(domen) {
+    constructor(domen,errorPage) {
         this.domen = domen;
         this._users = null;
         this._activeUsers = null;
         this.messages = [];
+        this.errorPage = errorPage;
     }
 
     get users() {
@@ -39,7 +40,7 @@ class ChatApiService {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(body),
-        })
+        });
         return response;
 
     }
@@ -51,13 +52,7 @@ class ChatApiService {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: body
-        }).then(data => data.json());
-        if (response.error) {
-            throw new Error(response.error);
-        }
-        if (response.token) {
-            localStorage.setItem("token", response.token);
-        }
+        });
         return response;
     }
 
@@ -70,9 +65,13 @@ class ChatApiService {
             const url = personalMessages ? this.domen + `messages?skip=${skip}&top=${top}&isPersonal=${true}&personalToFrom=${checkedUsesName}` + author + dateFrom + dateTo + text :
                 this.domen + `messages?skip=${skip}&top=${top}&isPersonal=${false}` + author + dateFrom + dateTo + text;
             this.messages = await this._GETandDELMethods(url, "GET").then(data => data.json());
+            if(this.messages.error){
+                this.messages = [];
+            }
             return this.messages
                 .reverse();
         } catch (e) {
+            this.errorPage.display();
         }
     }
 
