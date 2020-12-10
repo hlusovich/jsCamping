@@ -5,7 +5,6 @@ class MessagesView {
         this.containerId = containerId;
         this.userLogo = userLogo;
     }
-
     display(msgs, user) {
         const messagesList = document.getElementById(this.containerId);
         const messageListFragment = document.createDocumentFragment();
